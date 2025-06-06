@@ -1,0 +1,57 @@
+.sidenav{
+    background: #263238;
+    transition: all .5s ease;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    /*width: 5rem;*/
+    width: 16.5625rem;
+    height: 100vh;
+    box-shadow: 0.063rem 0 1.25rem 0 #8690a3;
+}
+
+.logo-container{
+    display: flex;
+    align-items: center;
+    padding: 0.938rem 0.938rem 0 0 0.938rem;
+    width: 100%;
+
+
+    .logo{
+
+        background: #fff;
+        text-align: center;
+        width: 3rem;
+        min-width: 3rem;
+        border-radius: 0.313rem;
+        padding: 0.313rem;
+        font-size: 24px;
+        font-weight: 900;
+        cursor: pointer;
+        border: none;
+
+    }
+    .logo-text{
+        margin-left: 1.5rem;
+        font-size: 24px;
+        font-weight: 700;
+        color: #fff;
+    }
+    .btn-close{
+       margin-left: auto;
+       cursor:pointer;
+       width: 2rem;
+       height: 2rem;
+       border-radius: 50%; 
+       background-color: transparent;
+       border: none;
+
+       .fa-times {
+        color: #fff;
+        font-size: 24px;
+       }
+
+
+    }
+
+}

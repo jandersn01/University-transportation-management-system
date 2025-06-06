@@ -1,0 +1,25 @@
+<div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed': '' ">
+    <div class="logo-container">
+        <button class="logo">UniPass</button>
+        @if(collapsed){
+            <div class="logo-text">Angular</div>
+        <button class="btn-close">
+            <i class="fa fa-times close icon"></i>
+        </button> 
+        }
+           
+    </div>
+
+    <ul class="sidenav-nav">
+        @for(data of navData; track data.routeLink){
+            <li class="sidenav-nav-item">
+                <a href="" class="sidenav-nav-link" [routerLink]="[data.routeLink]">
+                    <i class="sidenav-link-icon" [class]="data.icon"></i>
+                    @if(collapsed){
+                        <span class="sidenav-link-text">{{data.label}}</span>
+                    }  
+                </a>
+            </li>
+        }     
+    </ul>
+</div>
