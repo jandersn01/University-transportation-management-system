@@ -11,6 +11,6 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./sidenav.css']
 })
 export class Sidenav {
-  collapsed = false;
+  collapsed = true;
   navData = navaBarData
 }
