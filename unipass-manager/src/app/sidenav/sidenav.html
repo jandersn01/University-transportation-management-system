@@ -1,9 +1,9 @@
 <div class="sidenav" [ngClass]="collapsed ? 'sidenav-collapsed': '' ">
     <div class="logo-container">
-        <button class="logo">U</button>
+        <button class="logo" (click)="toggleCollapse()">U</button>
         @if(collapsed){
             <div class="logo-text">UniPass</div>
-        <button class="btn-close">
+        <button class="btn-close" (click)="closeSidenav()">
             <i class="fa fa-times close icon"></i>
         </button> 
         }

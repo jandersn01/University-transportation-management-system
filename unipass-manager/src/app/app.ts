@@ -2,6 +2,11 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { Sidenav } from './sidenav/sidenav';
 
+interface SidenavToggle{
+  screenWidth: number;
+  collapsed: boolean;
+}
+
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -11,4 +16,13 @@ import { Sidenav } from './sidenav/sidenav';
 })
 export class App {
   protected title = 'unipass-manager';
+
+  isSidenavCollapsed = false;
+  screenWidth = 0;
+
+  onToggleSidenav(data: SidenavToggle): void {
+    this.screenWidth = data.screenWidth;
+    this.isSidenavCollapsed = data.collapsed;
+  }
+
 }
