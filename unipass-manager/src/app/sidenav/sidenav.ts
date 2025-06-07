@@ -1,7 +1,7 @@
 import { Component, Output } from '@angular/core';
 import { navaBarData } from './nav-data';
 import { NgClass } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, RouterOutlet } from '@angular/router';
 import { EventEmitter } from '@angular/core';
 
 
@@ -14,7 +14,7 @@ interface SidenavToggle{
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [NgClass, RouterModule],
+  imports: [NgClass, RouterModule, RouterOutlet],
   templateUrl: './sidenav.html',
   styleUrls: ['./sidenav.css']
 })
