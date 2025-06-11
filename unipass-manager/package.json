@@ -4,6 +4,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:hot": "ng serve --configuration development --live-reload --poll=2000",
+    "start:dev": "ng serve --configuration development --open --live-reload --poll=2000",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test"
