@@ -54,12 +54,20 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
+          "options": {
+            "open": true,
+            "poll": 2000,
+            "liveReload": true
+          },
           "configurations": {
             "production": {
               "buildTarget": "unipass-manager:build:production"
             },
             "development": {
-              "buildTarget": "unipass-manager:build:development"
+              "buildTarget": "unipass-manager:build:development",
+              "open": true,
+              "poll": 2000,
+              "liveReload": true
             }
           },
           "defaultConfiguration": "development"
