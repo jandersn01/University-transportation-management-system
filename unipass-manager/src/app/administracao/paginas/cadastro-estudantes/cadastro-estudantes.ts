@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms'
+import { EstudantesService } from '../../../services/estudantes';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-cadastro-estudantes',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule, RouterModule],
   templateUrl: './cadastro-estudantes.html',
   styleUrl: './cadastro-estudantes.css'
 })
 export class CadastroEstudantes {
   private formerbuilder = inject(FormBuilder);
-  private estudanteService = inject(EstudanteService);
+  private estudanteService = inject(EstudantesService);
 
   cadastroForm: FormGroup;
   mensagem: string = '';

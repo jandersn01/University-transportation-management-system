@@ -1,1 +1,22 @@
-<p>cadastro-estudantes works!</p>
+<main>
+    <h3>Formulário de Cadastro de Estudante (RF001)</h3>
+<form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()">
+  <div>
+    <label for="nomeCompleto">Nome Completo:</label>
+    <input id="nomeCompleto" type="text" formControlName="nomeCompleto">
+  </div>
+  <div>
+    <label for="cpf">CPF:</label>
+    <input id="cpf" type="text" formControlName="cpf">
+  </div>
+   <div>
+    <label for="rg">RG:</label>
+    <input id="rg" type="text" formControlName="rg">
+  </div>
+  <button type="submit" [disabled]="!cadastroForm.valid">Enviar Cadastro</button>
+</form>
+
+@if (mensagem) {
+  <p class="feedback-message">{{ mensagem }}</p>
+}
+</main>

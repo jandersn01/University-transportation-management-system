@@ -1,5 +1,17 @@
-<main>
-    <div>
-        <button>Cadastrar estudantes</button>
-    </div>
-</main>
+<div class="container">
+     <ul class="sidenav-nav">
+        @for(data of acoes; track data.routeLink){
+            <li class="sidenav-nav-item">
+                <a href="" class="sidenav-nav-link" [routerLink]="[data.routeLink]">
+                    <i class="sidenav-link-icon" [class]="data.icon"></i>
+                    <span class="sidenav-link-text">{{data.label}}</span>  
+                </a>
+            </li>
+        }    
+    </ul>
+
+    <main>
+        <router-outlet></router-outlet>
+    </main>
+</div>
+
