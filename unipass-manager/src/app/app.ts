@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Sidenav } from './sidenav/sidenav';
+import { Sidenav } from './components/sidenav/sidenav';
 import { Body } from './body/body';
 import { LayoutService, SidenavToggle } from './services/layout.service';
 

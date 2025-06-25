@@ -1,5 +1,5 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { Estudante, EstudantesService } from '../../../services/estudantes';
+import { Estudante, EstudantesService } from '../../../../services/estudantes';
 import { RouterModule } from '@angular/router';
 
 @Component({

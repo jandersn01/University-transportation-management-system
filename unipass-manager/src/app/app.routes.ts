@@ -1,11 +1,11 @@
 import { Routes } from '@angular/router';
 import { Inicio } from './inicio/inicio';
-import { SolicitacoesEstudantis } from './solicitacoes-estudantis/solicitacoes-estudantis';
-import { Gerenciamento } from './gerenciamento/gerenciamento';
-import { Comunicacao } from './comunicacao/comunicacao';
+import { SolicitacoesEstudantis } from './pages/solicitacoes-estudantis/solicitacoes-estudantis';
+import { Gerenciamento } from './pages/gerenciamento/gerenciamento';
+import { Comunicacao } from './pages/comunicacao/comunicacao';
 import { Administracao } from './pages/administracao/administracao';
 import { Configuracoes } from './pages/configuracoes/configuracoes';
-import { AnaliseDeCadastro } from './solicitacoes-estudantis/paginas/analise-de-cadastro/analise-de-cadastro';
+import { AnaliseDeCadastro } from './pages/solicitacoes-estudantis/paginas/analise-de-cadastro/analise-de-cadastro';
 import { Component } from '@angular/core';
 import { CadastroEstudantes } from './pages/cadastro-estudantes/cadastro-estudantes';
 

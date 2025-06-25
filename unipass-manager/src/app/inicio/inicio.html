@@ -4,11 +4,11 @@
   <header class="header">
     <div>
       <h1>Visão Geral</h1>
-      <p class="header-subtitle">Dashboard Principal - {{ dataAtual() }}</p>
+      <p class="header-subtitle">{{ dataAtual() }}</p>
     </div>
     <div class="user-info">
-      <span>Administrador - Sistema</span>
-      <div class="user-avatar">AS</div>
+      <span>João Silva</span>
+      <div class="user-avatar">JS</div>
     </div>
   </header>
 
@@ -22,14 +22,13 @@
              'night': estatistica.periodo === 'Noite'
            }">
         <div class="stat-number">{{ estatistica.quantidade }}</div>
-        <div class="stat-label">Alunos {{ estatistica.periodo }}</div>
-        <div class="stat-period">{{ estatistica.data }}</div>
+        <div class="stat-label">Alunos</div>
+        <div class="stat">{{ estatistica.periodo }}</div>
       </div>
     }
     <div class="stat-card total">
       <div class="stat-number">{{ totalGeralAlunos() }}</div>
-      <div class="stat-label">Total Geral</div>
-      <div class="stat-period">Hoje</div>
+      <div class="stat">Total</div>
     </div>
   </section>
 
@@ -60,7 +59,7 @@
               <h4>{{ rota.nome }}</h4>
               <p>{{ rota.campus }} • {{ rota.totalAlunos }} alunos</p>
             </div>
-            <button class="btn btn-primary" (click)="editarRota(rota.id)">Editar</button>
+            <button class="btn-small btn-primary" (click)="editarRota(rota.id)">Ver mais</button>
           </div>
         }
       </div>
@@ -89,45 +88,6 @@
           <br><small>Filtro: {{ filtroMapa() | titlecase }}</small>
         }
       </div>
-    </div>
-  </section>
-
-  <!-- Horários Section - Padronizada -->
-  <section class="horarios-section">
-    <div class="section-header">
-      <h2 class="section-title">Horários Disponíveis</h2>
-      <div class="controls-group">
-        <button class="btn btn-secondary" (click)="atualizarEstatisticas()">
-          Atualizar Dados
-        </button>
-        @if (selectedHorario()) {
-          <button class="btn btn-outline" (click)="clearSelection()">
-            Limpar Seleção
-          </button>
-        }
-      </div>
-    </div>
-    
-    @if (selectedHorario()) {
-      <div class="selection-info">
-        <strong>Selecionado:</strong> {{ selectedHorario()?.nome }}
-        <span class="total-info">Total de horários: {{ totalHorarios() }}</span>
-      </div>
-    }
-
-    <!-- Cards dinâmicos de horários -->
-    <div class="horarios-grid">
-      @for (horario of horarios(); track horario.id) {
-        <div class="horario-card-wrapper">
-          <div 
-            (click)="selectHorario(horario.id)"
-            [class]="selectedHorarioId() === horario.id ? 
-              'horario-card selected clickable' : 
-              'horario-card clickable'">
-            <card-component [horario]="horario"></card-component>
-          </div>
-        </div>
-      }
     </div>
   </section>
 </main>
