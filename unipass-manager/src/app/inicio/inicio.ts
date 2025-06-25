@@ -68,18 +68,18 @@ export class Inicio {
   }
 
   editarRota(rotaId: number): void {
-    console.log('Editando rota:', rotaId);
     // Implementar navegação para edição de rota
+    // TODO: Navegar para edição da rota ${rotaId}
   }
 
   verDetalhesCalendario(): void {
-    console.log('Visualizando detalhes do calendário');
     // Implementar navegação para calendário detalhado
+    // TODO: Navegar para página de calendário detalhado
   }
 
   gerenciarRotas(): void {
-    console.log('Gerenciando rotas');
     // Implementar navegação para gerenciamento de rotas
+    // TODO: Navegar para página de gerenciamento de rotas
   }
 
   atualizarEstatisticas(): void {
@@ -92,7 +92,7 @@ export class Inicio {
   }
 
   exportarRelatorio(): void {
-    console.log('Exportando relatório do dashboard');
     // Implementar exportação de relatório
+    // TODO: Implementar funcionalidade de exportação de relatório
   }
 }

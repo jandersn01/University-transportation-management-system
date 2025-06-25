@@ -35,10 +35,15 @@ export class EstudantesService {
     return this.http.get<Estudante[]>(`${this.serviceUrl}?statusCadastro=Pendente`)
   }
 
+  //Get All
+  getTodosEstudantes(): Observable<Estudante[]> {
+    return this.http.get<Estudante[]>(this.serviceUrl);
+  }
+
   //Patch
   atualizarStatus(id: number, novoStatus: 'Aprovado' | 'Recusado'): Observable<Estudante>{
     return this.http.patch<Estudante>(
-      `<span class="math-inline">\{this\.apiUrl\}/</span>{id}`, { statusCadastro: novoStatus }
+      `${this.serviceUrl}/${id}`, { statusCadastro: novoStatus }
     )
   }
 
