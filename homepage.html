@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe - Homepage UniPass</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .logo {
+            text-align: center;
+            padding: 0 20px 30px;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 20px;
+        }
+        
+        .logo h2 {
+            font-size: 18px;
+            font-weight: 300;
+        }
+        
+        .menu-item {
+            padding: 15px 20px;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .menu-item:hover {
+            background-color: #34495e;
+            border-left-color: #3498db;
+        }
+        
+        .menu-item.active {
+            background-color: #3498db;
+            border-left-color: #2980b9;
+        }
+        
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+        
+        /* Header */
+        .header {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            color: #2c3e50;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3498db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        /* Quick Stats Row */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3498db, #2980b9);
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .stat-period {
+            color: #95a5a6;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+        
+        /* Main Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        /* Student Calendar Section */
+        .calendar-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .section-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .calendar-placeholder {
+            height: 400px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #7f8c8d;
+            font-size: 16px;
+            border: 2px dashed #dee2e6;
+            margin: 20px;
+            border-radius: 4px;
+        }
+        
+        /* Map Section */
+        .map-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .map-placeholder {
+            height: 300px;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            font-size: 16px;
+            position: relative;
+        }
+        
+        .map-overlay {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 10px 15px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            font-size: 12px;
+            color: #2c3e50;
+        }
+        
+        /* Bottom Grid */
+        .bottom-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        /* Routes Management */
+        .routes-section {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .routes-content {
+            padding: 20px;
+        }
+        
+        .route-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .route-item:last-child {
+            border-bottom: none;
+        }
+        
+        .route-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+        
+        .route-info p {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        
+        .btn-manage {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px 24px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .bottom-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            
+            .main-content {
+                margin-left: 200px;
+            }
+            
+            .quick-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h2>UniPass</h2>
+            </div>
+            <div class="menu-item active">
+                📊 Dashboard
+            </div>
+            <div class="menu-item">
+                📝 Solicitações Estudantis
+            </div>
+            <div class="menu-item">
+                🎯 Gerenciamento
+            </div>
+            <div class="menu-item">
+                💬 Comunicação
+            </div>
+            <div class="menu-item">
+                👥 Administração
+            </div>
+            <div class="menu-item">
+                ⚙️ Configurações
+            </div>
+            <div class="menu-item">
+                👤 Meu Perfil
+            </div>
+            <div class="menu-item">
+                🚪 Sair
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header Section -->
+            <header class="header">
+                <div>
+                    <h1>Visão Geral</h1>
+                    <p style="color: #7f8c8d; font-size: 14px; margin-top: 4px;">Dashboard Principal - 02/06</p>
+                </div>
+                <div class="user-info">
+                    <span>Administrador - Sistema</span>
+                    <div class="user-avatar">AS</div>
+                </div>
+            </header>
+
+            <!-- Quick Statistics Row -->
+            <section class="quick-stats">
+                <div class="stat-card">
+                    <div class="stat-number">219</div>
+                    <div class="stat-label">Alunos Manhã</div>
+                    <div class="stat-period">02/06</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">219</div>
+                    <div class="stat-label">Alunos Tarde</div>
+                    <div class="stat-period">02/06</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">219</div>
+                    <div class="stat-label">Alunos Noite</div>
+                    <div class="stat-period">02/06</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">657</div>
+                    <div class="stat-label">Total Geral</div>
+                    <div class="stat-period">Hoje</div>
+                </div>
+            </section>
+
+            <!-- Main Dashboard Grid -->
+            <div class="dashboard-grid">
+                <!-- Student Calendar Section -->
+                <section class="calendar-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Calendário Estudantil</h2>
+                        <button class="btn btn-primary">Ver Detalhes</button>
+                    </div>
+                    <div class="calendar-placeholder">
+                        📅 Calendário Municipal Integrado
+                        <br><small>Eventos acadêmicos e feriados</small>
+                    </div>
+                </section>
+
+                <!-- Routes Management (moved from bottom) -->
+                <section class="routes-section">
+                    <div class="section-header">
+                        <h2 class="section-title">Itinerários</h2>
+                        <button class="btn btn-manage" style="width: auto; padding: 8px 16px; margin: 0; font-size: 12px;">Gerenciar rotas</button>
+                    </div>
+                    <div class="routes-content">
+                        <div class="route-item">
+                            <div class="route-info">
+                                <h4>Rota Manhã - Centro</h4>
+                                <p>UFPB Campus I • 73 alunos</p>
+                            </div>
+                            <button class="btn btn-primary">Editar</button>
+                        </div>
+                        
+                        <div class="route-item">
+                            <div class="route-info">
+                                <h4>Rota Tarde - Bancários</h4>
+                                <p>UEPB Campus III • 85 alunos</p>
+                            </div>
+                            <button class="btn btn-primary">Editar</button>
+                        </div>
+                        
+                        <div class="route-item">
+                            <div class="route-info">
+                                <h4>Rota Noite - Mangabeira</h4>
+                                <p>IFPB • 67 alunos</p>
+                            </div>
+                            <button class="btn btn-primary">Editar</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Map Section -->
+            <section class="map-section" style="margin-bottom: 20px;">
+                <div class="section-header">
+                    <h2 class="section-title">Mapa de Rotas</h2>
+                    <select style="padding: 8px; border: 1px solid #ddd; border-radius: 4px;">
+                        <option>Filtros</option>
+                        <option>Manhã</option>
+                        <option>Tarde</option>
+                        <option>Noite</option>
+                    </select>
+                </div>
+                <div class="map-placeholder">
+                    🗺️ Mapa Interativo de Rotas
+                    <div class="map-overlay">
+                        📍 Pontos de Parada Ativos
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
