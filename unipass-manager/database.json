@@ -1,0 +1,46 @@
+{
+  "estudantes": [
+    {
+      "id": "1",
+      "cpf": "111.222.333-44",
+      "nomeCompleto": "Ana Beatriz de Oliveira",
+      "rg": "12.345.678-9",
+      "dataNascimento": "2004-08-15",
+      "universidade": "Universidade Federal de Pernambuco (UFPE)",
+      "campus": "Recife",
+      "turno": "Noite",
+      "previsaoConclusao": "2028-12-20",
+      "declaracaoVinculoUrl": "uploads/docs/ana_vinculo.pdf",
+      "comprovanteResidenciaUrl": "uploads/docs/ana_residencia.pdf",
+      "statusCadastro": "Pendente"
+    },
+    {
+      "id": "2",
+      "cpf": "555.666.777-88",
+      "nomeCompleto": "Carlos Eduardo Lima",
+      "rg": "98.765.432-1",
+      "dataNascimento": "2003-05-22",
+      "universidade": "Universidade de Pernambuco (UPE)",
+      "campus": "Caruaru",
+      "turno": "Manhã",
+      "previsaoConclusao": "2027-07-30",
+      "declaracaoVinculoUrl": "uploads/docs/carlos_vinculo.pdf",
+      "comprovanteResidenciaUrl": "uploads/docs/carlos_residencia.pdf",
+      "statusCadastro": "Aprovado"
+    },
+    {
+      "id": "6b5c",
+      "cpf": "713.251.604-31",
+      "nomeCompleto": "Janderson Lima ",
+      "rg": "2.222.222",
+      "dataNascimento": "2001-03-22",
+      "universidade": "Instituto Federal Da Paraíba",
+      "campus": "joao pessoa",
+      "turno": "Tarde",
+      "previsaoConclusao": "2028-03-22",
+      "declaracaoVinculoUrl": "path/declaracao.pdf",
+      "comprovanteResidenciaUrl": "path/residencia.pdf",
+      "statusCadastro": "Pendente"
+    }
+  ]
+}

@@ -14,7 +14,7 @@ interface SidenavToggle{
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [NgClass, RouterModule, RouterOutlet],
+  imports: [NgClass, RouterModule],
   templateUrl: './sidenav.html',
   styleUrls: ['./sidenav.css']
 })

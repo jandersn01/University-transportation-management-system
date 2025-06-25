@@ -1,0 +1,33 @@
+<h3>Painel de Aprovação de Cadastros (RF003)</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Nome do Estudante</th>
+      <th>CPF</th>
+      <th>Universidade</th>
+      <th>Documentos</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (solicitacao of solicitacoesPendentes; track solicitacao.id) {
+      <tr>
+        <td>{{ solicitacao.nomeCompleto }}</td>
+        <td>{{ solicitacao.cpf }}</td>
+        <td>{{ solicitacao.universidade }}</td>
+        <td>
+          <a [href]="solicitacao.declaracaoVinculoUrl" target="_blank">Vínculo</a> |
+          <a [href]="solicitacao.comprovanteResidenciaUrl" target="_blank">Residência</a>
+        </td>
+        <td>
+          <button (click)="aprovarSolicitacao(solicitacao.id)">Aprovar</button>
+          <button (click)="recusarSolicitacao(solicitacao.id)">Recusar</button>
+        </td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="5">Nenhuma solicitação pendente no momento.</td>
+      </tr>
+    }
+  </tbody>
+</table>
