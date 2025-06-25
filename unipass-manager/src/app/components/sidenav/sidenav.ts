@@ -1,5 +1,5 @@
 import { Component, Output } from '@angular/core';
-import { navaBarData } from './nav-data';
+import { navaBarData } from '../../data/nav-data';
 import { NgClass } from '@angular/common';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { EventEmitter } from '@angular/core';
