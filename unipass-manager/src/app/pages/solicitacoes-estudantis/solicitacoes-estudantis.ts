@@ -1,6 +1,7 @@
-import { Component, signal, computed } from '@angular/core';
+import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { EstudantesService, Estudante } from '../../services/estudantes';
 
 export interface SolicitacaoEstudante {
   id: number;
@@ -26,55 +27,14 @@ export interface Estatisticas {
   templateUrl: './solicitacoes-estudantis.html',
   styleUrl: './solicitacoes-estudantis.css'
 })
-export class SolicitacoesEstudantis {
+export class SolicitacoesEstudantis implements OnInit {
+  // Injeta o serviço de estudantes
+  private estudantesService = inject(EstudantesService);
+
   // Signals para gerenciar dados
-  solicitacoes = signal<SolicitacaoEstudante[]>([
-    {
-      id: 1,
-      nomeEstudante: 'Maria Santos Silva',
-      cpf: '123.456.789-01',
-      universidade: 'UFPB - Campus I',
-      matricula: '20231001234',
-      dataCadastro: '05/06/2025',
-      status: 'pendente'
-    },
-    {
-      id: 2,
-      nomeEstudante: 'João Pedro Oliveira',
-      cpf: '987.654.321-02',
-      universidade: 'UEPB - Campus III',
-      matricula: '20231002345',
-      dataCadastro: '04/06/2025',
-      status: 'pendente'
-    },
-    {
-      id: 3,
-      nomeEstudante: 'Ana Carolina Ferreira',
-      cpf: '456.789.123-03',
-      universidade: 'IFPB - Campus João Pessoa',
-      matricula: '20231003456',
-      dataCadastro: '03/06/2025',
-      status: 'aprovado'
-    },
-    {
-      id: 4,
-      nomeEstudante: 'Carlos Eduardo Lima',
-      cpf: '789.123.456-04',
-      universidade: 'UFPB - Campus II',
-      matricula: '20231004567',
-      dataCadastro: '02/06/2025',
-      status: 'reprovado'
-    },
-    {
-      id: 5,
-      nomeEstudante: 'Fernanda Ribeiro Costa',
-      cpf: '321.654.987-05',
-      universidade: 'UEPB - Campus I',
-      matricula: '20231005678',
-      dataCadastro: '01/06/2025',
-      status: 'pendente'
-    }
-  ]);
+  solicitacoes = signal<Estudante[]>([]);
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
 
   // Signals para filtros
   filtroStatus = signal<string>('');
@@ -86,9 +46,9 @@ export class SolicitacoesEstudantis {
   estatisticas = computed((): Estatisticas => {
     const solicitacoes = this.solicitacoes();
     return {
-      pendentes: solicitacoes.filter(s => s.status === 'pendente').length,
-      aprovados: solicitacoes.filter(s => s.status === 'aprovado').length,
-      reprovados: solicitacoes.filter(s => s.status === 'reprovado').length,
+      pendentes: solicitacoes.filter(s => s.statusCadastro === 'Pendente').length,
+      aprovados: solicitacoes.filter(s => s.statusCadastro === 'Aprovado').length,
+      reprovados: solicitacoes.filter(s => s.statusCadastro === 'Recusado').length,
       total: solicitacoes.length
     };
   });
@@ -99,7 +59,13 @@ export class SolicitacoesEstudantis {
     
     // Filtro por status
     if (this.filtroStatus()) {
-      solicitacoes = solicitacoes.filter(s => s.status === this.filtroStatus());
+      const statusMap: { [key: string]: string } = {
+        'pendente': 'Pendente',
+        'aprovado': 'Aprovado',
+        'reprovado': 'Recusado'
+      };
+      const statusFiltro = statusMap[this.filtroStatus()] || this.filtroStatus();
+      solicitacoes = solicitacoes.filter(s => s.statusCadastro === statusFiltro);
     }
 
     // Filtro por universidade
@@ -113,9 +79,8 @@ export class SolicitacoesEstudantis {
     if (this.termoBusca()) {
       const termo = this.termoBusca().toLowerCase();
       solicitacoes = solicitacoes.filter(s => 
-        s.nomeEstudante.toLowerCase().includes(termo) ||
-        s.cpf.includes(termo) ||
-        s.matricula.includes(termo)
+        s.nomeCompleto.toLowerCase().includes(termo) ||
+        s.cpf.includes(termo)
       );
     }
 
@@ -139,26 +104,71 @@ export class SolicitacoesEstudantis {
     this.termoBusca.set(termo);
   }
 
+  // Lifecycle hook
+  ngOnInit(): void {
+    this.carregarSolicitacoes();
+  }
+
+  // Método para carregar dados do json-server
+  carregarSolicitacoes(): void {
+    this.loading.set(true);
+    this.error.set(null);
+    
+    // Carregar todos os estudantes para permitir filtros
+    this.estudantesService.getTodosEstudantes().subscribe({
+      next: (dados) => {
+        this.solicitacoes.set(dados);
+        this.loading.set(false);
+      },
+      error: (erro) => {
+        this.error.set('Erro ao carregar solicitações: ' + erro.message);
+        this.loading.set(false);
+        console.error('Erro ao carregar solicitações:', erro);
+      }
+    });
+  }
+
+  // Método para recarregar dados
+  recarregarDados(): void {
+    this.carregarSolicitacoes();
+  }
+
   // Métodos para ações
   aprovarSolicitacao(id: number): void {
-    this.solicitacoes.update(solicitacoes =>
-      solicitacoes.map(s => 
-        s.id === id ? { ...s, status: 'aprovado' as const } : s
-      )
-    );
+    this.estudantesService.atualizarStatus(id, 'Aprovado').subscribe({
+      next: () => {
+        this.solicitacoes.update(solicitacoes =>
+          solicitacoes.map(s => 
+            s.id === id ? { ...s, statusCadastro: 'Aprovado' as const } : s
+          )
+        );
+      },
+      error: (erro) => {
+        this.error.set('Erro ao aprovar solicitação: ' + erro.message);
+        console.error('Erro ao aprovar:', erro);
+      }
+    });
   }
 
   reprovarSolicitacao(id: number): void {
-    this.solicitacoes.update(solicitacoes =>
-      solicitacoes.map(s => 
-        s.id === id ? { ...s, status: 'reprovado' as const } : s
-      )
-    );
+    this.estudantesService.atualizarStatus(id, 'Recusado').subscribe({
+      next: () => {
+        this.solicitacoes.update(solicitacoes =>
+          solicitacoes.map(s => 
+            s.id === id ? { ...s, statusCadastro: 'Recusado' as const } : s
+          )
+        );
+      },
+      error: (erro) => {
+        this.error.set('Erro ao reprovar solicitação: ' + erro.message);
+        console.error('Erro ao reprovar:', erro);
+      }
+    });
   }
 
   verDetalhes(id: number): void {
-    console.log('Ver detalhes da solicitação:', id);
     // Implementar navegação para detalhes
+    // TODO: Navegar para página de detalhes da solicitação ${id}
   }
 
   limparFiltros(): void {
@@ -169,7 +179,7 @@ export class SolicitacoesEstudantis {
   }
 
   exportarRelatorio(): void {
-    console.log('Exportar relatório');
     // Implementar exportação
+    // TODO: Implementar exportação de relatório
   }
 }

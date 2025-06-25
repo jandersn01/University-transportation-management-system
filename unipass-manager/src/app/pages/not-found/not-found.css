@@ -1,0 +1,325 @@
+/* Main Content */
+.main-content {
+  padding: 0;
+  margin: 0;
+  background-color: #f8f9fa;
+}
+
+/* Container 404 centralizado */
+.container-404 {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Logo Container */
+.logo-container {
+  margin-bottom: 3rem;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logo-text {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #263238;
+  letter-spacing: 2px;
+}
+
+.logo-subtitle {
+  font-size: 0.9rem;
+  color: #6c757d;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Número 404 com animação */
+.error-number {
+  font-size: 11rem;
+  font-weight: 900;
+  color: #e74c3c;
+  letter-spacing: 0.15em;
+  padding-left: 0.15em;
+  margin: 0;
+  line-height: 1;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Animação de pulse */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Títulos de erro */
+.error-title {
+  font-size: 2.5rem;
+  color: #2c3e50;
+  margin: 1rem 0 0.5rem 0;
+  font-weight: 600;
+}
+
+.error-subtitle {
+  font-size: 1.2rem;
+  color: #6c757d;
+  margin: 0 0 2.5rem 0;
+  font-weight: 400;
+}
+
+/* Botão */
+.btn {
+  padding: 12px 32px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 2.5rem;
+}
+
+.btn-primary {
+  background-color: #263238;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #1c252a;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(38, 50, 56, 0.3);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+/* Available Pages */
+.available-pages {
+  border-top: 1px solid #ecf0f1;
+  padding-top: 2rem;
+}
+
+.available-pages h3 {
+  color: #2c3e50;
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.page-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.page-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem 2rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+  min-width: 120px;
+}
+
+.page-link:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.page-link i {
+  font-size: 2rem;
+  color: #3498db;
+}
+
+.page-link span {
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Coming Soon */
+.coming-soon {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  text-align: center;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.coming-soon h3 {
+  color: #f39c12;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.coming-soon-items {
+  display: flex;
+  gap: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.coming-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: #fef9e7;
+  border-radius: 8px;
+  border: 1px solid #f7dc6f;
+  min-width: 100px;
+}
+
+.coming-item i {
+  font-size: 2rem;
+  color: #f39c12;
+}
+
+.coming-item span {
+  font-weight: 500;
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container-404 {
+    padding: 15px;
+  }
+
+  .logo-text {
+    font-size: 2rem;
+  }
+
+  .logo-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .error-number {
+    font-size: 8rem;
+  }
+
+  .error-title {
+    font-size: 2rem;
+  }
+
+  .error-subtitle {
+    font-size: 1rem;
+  }
+
+  .btn {
+    padding: 10px 24px;
+    font-size: 0.9rem;
+  }
+
+  .page-links {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .page-link {
+    min-width: 200px;
+  }
+
+  .coming-soon-items {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .coming-item {
+    min-width: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-text {
+    font-size: 1.8rem;
+  }
+
+  .logo-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .error-number {
+    font-size: 6rem;
+  }
+
+  .error-title {
+    font-size: 1.8rem;
+  }
+
+  .error-subtitle {
+    font-size: 0.95rem;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    font-size: 0.85rem;
+  }
+
+  .coming-soon {
+    padding: 1.5rem 1rem;
+  }
+
+  .coming-soon h3 {
+    font-size: 1.3rem;
+  }
+}
+
+/* Ajustes extras para uma aparência mais limpa */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* Animação suave para o container quando carrega */
+.container-404 {
+  animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+} 

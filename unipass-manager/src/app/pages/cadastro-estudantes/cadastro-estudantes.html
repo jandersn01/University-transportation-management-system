@@ -1,224 +1,100 @@
-<!-- Main Content -->
-<main class="main-content">
-  <!-- Header -->
-  <header class="header">
-    <h1>Cadastro de Estudantes</h1>
-    <div class="user-info">
-      <span>Sistema UniPass</span>
-      <div class="user-avatar">UP</div>
+<main class="bg-slate-100 min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+  <div class="w-full max-w-4xl bg-white rounded-2xl shadow-lg p-6 sm:p-8 space-y-6">
+    <div class="text-center">
+      <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-800">
+        Formulário de Cadastro UniPass
+      </h2>
+      <p class="mt-2 text-sm text-slate-600">
+        Preencha seus dados para solicitar o benefício (RF001).
+      </p>
     </div>
-  </header>
 
-  <!-- Form Section -->
-  <section class="form-section">
-    <div class="form-container">
-      <div class="form-header">
-        <h2>Formulário de Cadastro</h2>
-        <p>Preencha seus dados para solicitar o benefício de transporte universitário</p>
+    <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+
+        <div class="md:col-span-2">
+          <label for="nomeCompleto" class="block text-sm font-medium text-slate-700">Nome Completo</label>
+          <input id="nomeCompleto" type="text" formControlName="nomeCompleto"
+                 class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div>
+          <label for="rg" class="block text-sm font-medium text-slate-700">RG</label>
+          <input id="rg" type="text" formControlName="rg"
+                 class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div>
+          <label for="cpf" class="block text-sm font-medium text-slate-700">CPF</label>
+          <input id="cpf" type="text" formControlName="cpf"
+                 class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div>
+          <label for="dataNascimento" class="block text-sm font-medium text-slate-700">Data de Nascimento</label>
+          <input id="dataNascimento" type="date" formControlName="dataNascimento"
+                 class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div>
+          <label for="turno" class="block text-sm font-medium text-slate-700">Turno das Aulas</label>
+          <select id="turno" formControlName="turno"
+                  class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+            <option value="" disabled>Selecione o turno</option>
+            <option value="Manhã">Manhã</option>
+            <option value="Tarde">Tarde</option>
+            <option value="Noite">Noite</option>
+            <option value="Integral">Integral</option>
+          </select>
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="universidade" class="block text-sm font-medium text-slate-700">Universidade / Campus</label>
+          <input id="universidade" type="text" formControlName="universidade" placeholder="Ex: Universidade Federal de Pernambuco (UFPE) - Recife"
+                 class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div class="md:col-span-2">
+           <label for="campus" class="block text-sm font-medium text-slate-700">Campus</label>
+           <input id="campus" type="text" formControlName="campus"
+              class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div class="md:col-span-2">
+          <label for="previsaoConclusao" class="block text-sm font-medium text-slate-700">Previsão de Conclusão de Curso</label>
+          <input id="previsaoConclusao" type="date" formControlName="previsaoConclusao"
+                 class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+        </div>
+
+        <div class="md:col-span-2">
+            <label for="declaracaoVinculoUrl" class="block text-sm font-medium text-slate-700">Declaração de Vínculo (caminho do arquivo)</label>
+            <p class="text-xs text-slate-500 mb-1">Para simulação, insira um caminho de arquivo. Ex: C:\docs\vinculo.pdf</p>
+            <input id="declaracaoVinculoUrl" type="text" formControlName="declaracaoVinculoUrl"
+                   class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+        </div>
+
+        <div class="md:col-span-2">
+            <label for="comprovanteResidenciaUrl" class="block text-sm font-medium text-slate-700">Comprovante de Residência (caminho do arquivo)</label>
+            <p class="text-xs text-slate-500 mb-1">Para simulação, insira um caminho de arquivo. Ex: C:\docs\residencia.pdf</p>
+            <input id="comprovanteResidenciaUrl" type="text" formControlName="comprovanteResidenciaUrl"
+                   class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"/>
+        </div>
+
       </div>
 
-      <form [formGroup]="cadastroForm" (ngSubmit)="onSubmit()" class="cadastro-form">
-        <!-- Personal Information -->
-        <div class="form-section-group">
-          <h3>Dados Pessoais</h3>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="nomeCompleto">Nome Completo *</label>
-              <input 
-                id="nomeCompleto" 
-                type="text" 
-                formControlName="nomeCompleto"
-                class="form-control"
-                [class.error]="isFieldInvalid('nomeCompleto')"
-                placeholder="Digite seu nome completo">
-              @if (isFieldInvalid('nomeCompleto')) {
-                <span class="error-message">{{ getFieldError('nomeCompleto') }}</span>
-              }
-            </div>
+      <div>
+        <button type="submit" [disabled]="!cadastroForm.valid"
+                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed">
+          Enviar Cadastro
+        </button>
+      </div>
+    </form>
 
-            <div class="form-group">
-              <label for="cpf">CPF *</label>
-              <input 
-                id="cpf" 
-                type="text" 
-                formControlName="cpf"
-                class="form-control"
-                [class.error]="isFieldInvalid('cpf')"
-                placeholder="000.000.000-00"
-                maxlength="14">
-              @if (isFieldInvalid('cpf')) {
-                <span class="error-message">{{ getFieldError('cpf') }}</span>
-              }
-            </div>
+    @if (mensagem) {
+      <div class="p-4 rounded-md" [ngClass]="mensagem.includes('sucesso') ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'">
+        <p>{{ mensagem }}</p>
+      </div>
+    }
 
-            <div class="form-group">
-              <label for="rg">RG *</label>
-              <input 
-                id="rg" 
-                type="text" 
-                formControlName="rg"
-                class="form-control"
-                [class.error]="isFieldInvalid('rg')"
-                placeholder="Digite seu RG">
-              @if (isFieldInvalid('rg')) {
-                <span class="error-message">{{ getFieldError('rg') }}</span>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="dataNascimento">Data de Nascimento *</label>
-              <input 
-                id="dataNascimento" 
-                type="date" 
-                formControlName="dataNascimento"
-                class="form-control"
-                [class.error]="isFieldInvalid('dataNascimento')">
-              @if (isFieldInvalid('dataNascimento')) {
-                <span class="error-message">{{ getFieldError('dataNascimento') }}</span>
-              }
-            </div>
-          </div>
-        </div>
-
-        <!-- Academic Information -->
-        <div class="form-section-group">
-          <h3>Dados Acadêmicos</h3>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="universidade">Universidade *</label>
-              <select 
-                id="universidade" 
-                formControlName="universidade"
-                class="form-control"
-                [class.error]="isFieldInvalid('universidade')">
-                <option value="">Selecione a universidade</option>
-                @for (uni of universidades(); track uni.value) {
-                  <option [value]="uni.value">{{ uni.label }}</option>
-                }
-              </select>
-              @if (isFieldInvalid('universidade')) {
-                <span class="error-message">{{ getFieldError('universidade') }}</span>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="campus">Campus *</label>
-              <select 
-                id="campus" 
-                formControlName="campus"
-                class="form-control"
-                [class.error]="isFieldInvalid('campus')"
-                [disabled]="!universidadeSelecionada()">
-                <option value="">{{ universidadeSelecionada() ? 'Selecione o campus' : 'Selecione primeiro a universidade' }}</option>
-                @for (campus of campusDisponiveis(); track campus) {
-                  <option [value]="campus">{{ campus }}</option>
-                }
-              </select>
-              @if (isFieldInvalid('campus')) {
-                <span class="error-message">{{ getFieldError('campus') }}</span>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="turno">Turno das Aulas *</label>
-              <select 
-                id="turno" 
-                formControlName="turno"
-                class="form-control"
-                [class.error]="isFieldInvalid('turno')">
-                <option value="">Selecione o turno</option>
-                @for (turno of turnos(); track turno.value) {
-                  <option [value]="turno.value">{{ turno.label }}</option>
-                }
-              </select>
-              @if (isFieldInvalid('turno')) {
-                <span class="error-message">{{ getFieldError('turno') }}</span>
-              }
-            </div>
-
-            <div class="form-group">
-              <label for="previsaoConclusao">Previsão de Conclusão *</label>
-              <input 
-                id="previsaoConclusao" 
-                type="date" 
-                formControlName="previsaoConclusao"
-                class="form-control"
-                [class.error]="isFieldInvalid('previsaoConclusao')">
-              @if (isFieldInvalid('previsaoConclusao')) {
-                <span class="error-message">{{ getFieldError('previsaoConclusao') }}</span>
-              }
-            </div>
-          </div>
-        </div>
-
-        <!-- Documents -->
-        <div class="form-section-group">
-          <h3>Documentos Necessários</h3>
-          <div class="form-grid">
-            <div class="form-group">
-              <label for="declaracaoVinculoUrl">Declaração de Vínculo *</label>
-              <input 
-                id="declaracaoVinculoUrl" 
-                type="text" 
-                formControlName="declaracaoVinculoUrl"
-                class="form-control"
-                [class.error]="isFieldInvalid('declaracaoVinculoUrl')"
-                placeholder="Caminho do arquivo (ex: C:\documentos\declaracao.pdf)">
-              @if (isFieldInvalid('declaracaoVinculoUrl')) {
-                <span class="error-message">{{ getFieldError('declaracaoVinculoUrl') }}</span>
-              }
-              <small class="field-hint">Para simulação, insira um caminho de arquivo válido</small>
-            </div>
-
-            <div class="form-group">
-              <label for="comprovanteResidenciaUrl">Comprovante de Residência *</label>
-              <input 
-                id="comprovanteResidenciaUrl" 
-                type="text" 
-                formControlName="comprovanteResidenciaUrl"
-                class="form-control"
-                [class.error]="isFieldInvalid('comprovanteResidenciaUrl')"
-                placeholder="Caminho do arquivo (ex: C:\documentos\residencia.pdf)">
-              @if (isFieldInvalid('comprovanteResidenciaUrl')) {
-                <span class="error-message">{{ getFieldError('comprovanteResidenciaUrl') }}</span>
-              }
-              <small class="field-hint">Para simulação, insira um caminho de arquivo válido</small>
-            </div>
-          </div>
-        </div>
-
-        <!-- Form Actions -->
-        <div class="form-actions">
-          <button 
-            type="button" 
-            class="btn btn-secondary" 
-            (click)="limparFormulario()"
-            [disabled]="loading()">
-            Limpar Formulário
-          </button>
-          <button 
-            type="submit" 
-            class="btn btn-primary" 
-            [disabled]="loading() || !cadastroForm.valid">
-            @if (loading()) {
-              <i class="loading-spinner"></i>
-              Enviando...
-            } @else {
-              Enviar Cadastro
-            }
-          </button>
-        </div>
-      </form>
-
-      <!-- Message Display -->
-      @if (mensagem()) {
-        <div class="message-container" [ngClass]="{'success': isSuccessMessage(), 'error': !isSuccessMessage()}">
-          <div class="message-content">
-            <i class="message-icon" [ngClass]="{'success-icon': isSuccessMessage(), 'error-icon': !isSuccessMessage()}"></i>
-            <p>{{ mensagem() }}</p>
-          </div>
-        </div>
-      }
-    </div>
-  </section>
+  </div>
 </main>

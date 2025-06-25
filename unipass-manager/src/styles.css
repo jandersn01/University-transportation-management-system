@@ -1,14 +1,17 @@
 /* Imports devem vir primeiro */
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
 
-/* Global base styles usando Tailwind */
+/* Global base styles */
 * {
-    @apply m-0 p-0 box-border;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 body {
-    @apply relative font-['Roboto',sans-serif] bg-gray-50;
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9fafb;
 }
 
 /* Estilos Globais Padronizados - Base: Solicitações Estudantis */
@@ -31,6 +34,8 @@ body {
   --border-color: #eee;
   --shadow-light: 0 2px 4px rgba(0,0,0,0.1);
   --shadow-hover: 0 4px 12px rgba(0,0,0,0.15);
+  --sidenav-color: #263238;
+  --sidenav-hover: #1c252a;
 }
 
 /* Layout padrão */

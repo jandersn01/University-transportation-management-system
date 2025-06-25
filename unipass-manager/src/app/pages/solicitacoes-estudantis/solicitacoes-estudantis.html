@@ -49,7 +49,7 @@
         <input 
           type="text" 
           id="search" 
-          placeholder="Nome, CPF ou matrícula"
+          placeholder="Nome ou CPF"
           [value]="termoBusca()"
           (input)="atualizarTermoBusca($any($event.target).value)">
       </div>
@@ -84,18 +84,37 @@
   <section class="students-section">
     <div class="section-header">
       <h2 class="section-title">Lista de Cadastros</h2>
-      <button class="btn btn-primary" (click)="exportarRelatorio()">Exportar Relatório</button>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="exportarRelatorio()">Exportar Relatório</button>
+      </div>
     </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="loading-state">
+        <p>Carregando solicitações...</p>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+      <div class="error-state">
+        <p>{{ error() }}</p>
+        <button class="btn btn-primary" (click)="recarregarDados()">Tentar Novamente</button>
+      </div>
+    }
     
-    <div class="table-container">
+    <!-- Table -->
+    @if (!loading() && !error()) {
+      <div class="table-container">
       <table>
         <thead>
           <tr>
             <th>Nome do Estudante</th>
             <th>CPF</th>
             <th>Universidade</th>
-            <th>Matrícula</th>
-            <th>Data Cadastro</th>
+            <th>Campus</th>
+            <th>Data Nascimento</th>
             <th>Status</th>
             <th>Ações</th>
           </tr>
@@ -103,21 +122,20 @@
         <tbody>
           @for (solicitacao of solicitacoesFiltradas(); track solicitacao.id) {
             <tr>
-              <td>{{ solicitacao.nomeEstudante }}</td>
+              <td>{{ solicitacao.nomeCompleto }}</td>
               <td>{{ solicitacao.cpf }}</td>
               <td>{{ solicitacao.universidade }}</td>
-              <td>{{ solicitacao.matricula }}</td>
-              <td>{{ solicitacao.dataCadastro }}</td>
+              <td>{{ solicitacao.campus }}</td>
+              <td>{{ solicitacao.dataNascimento }}</td>
               <td>
                 <span 
                   class="status-badge"
                   [ngClass]="{
-                    'status-pending': solicitacao.status === 'pendente',
-                    'status-approved': solicitacao.status === 'aprovado',
-                    'status-rejected': solicitacao.status === 'reprovado'
+                    'status-pending': solicitacao.statusCadastro === 'Pendente',
+                    'status-approved': solicitacao.statusCadastro === 'Aprovado',
+                    'status-rejected': solicitacao.statusCadastro === 'Recusado'
                   }">
-                  {{ solicitacao.status === 'pendente' ? 'Pendente' : 
-                     solicitacao.status === 'aprovado' ? 'Aprovado' : 'Reprovado' }}
+                  {{ solicitacao.statusCadastro }}
                 </span>
               </td>
               <td>
@@ -127,7 +145,7 @@
                     (click)="verDetalhes(solicitacao.id)">
                     Ver Detalhes
                   </button>
-                  @if (solicitacao.status === 'pendente') {
+                  @if (solicitacao.statusCadastro === 'Pendente') {
                     <button 
                       class="btn-small btn-approve" 
                       (click)="aprovarSolicitacao(solicitacao.id)">
@@ -136,7 +154,7 @@
                     <button 
                       class="btn-small btn-reject" 
                       (click)="reprovarSolicitacao(solicitacao.id)">
-                      Reprovar
+                      Recusar
                     </button>
                   }
                 </div>
@@ -145,7 +163,8 @@
           }
         </tbody>
       </table>
-    </div>
+      </div>
+    }
 
     <!-- Pagination -->
     <div class="pagination">

@@ -4,7 +4,7 @@ export const navaBarData = [
     {
         routeLink: 'inicio',
         icon: 'fal fa-home', // Mantido: Perfeito para a página inicial.
-        label: 'inicio'
+        label: 'Início'
     },
     {
         routeLink: 'solicitacoes-estudantis',
