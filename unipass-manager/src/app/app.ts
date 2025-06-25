@@ -1,29 +1,33 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
 import { Sidenav } from './sidenav/sidenav';
 import { Body } from './body/body';
-
-interface SidenavToggle{
-  screenWidth: number;
-  collapsed: boolean;
-}
+import { LayoutService, SidenavToggle } from './services/layout.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Sidenav, Body],
+  imports: [Sidenav, Body],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class App implements OnInit {
   protected title = 'unipass-manager';
 
-  isSidenavCollapsed = false;
-  screenWidth = 0;
+  // Injeção do serviço usando inject() - forma mais moderna
+  protected layoutService = inject(LayoutService);
 
-  onToggleSidenav(data: SidenavToggle): void {
-    this.screenWidth = data.screenWidth;
-    this.isSidenavCollapsed = data.collapsed;
+  // Signals do serviço disponíveis diretamente
+  collapsed = this.layoutService.collapsed;
+  screenWidth = this.layoutService.screenWidth;
+  bodyClass = this.layoutService.bodyClass;
+
+  ngOnInit(): void {
+    // Inicializa a largura da tela
+    this.layoutService.initializeScreenWidth();
   }
 
+  onToggleSidenav(data: SidenavToggle): void {
+    // Usa o método do service para atualizar o estado
+    this.layoutService.updateLayout(data);
+  }
 }

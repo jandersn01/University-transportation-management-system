@@ -1,9 +1,133 @@
-<div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="flex flex-wrap gap-6 justify-center items-center">   
-        @for (horario of horarios; track horario.id) {
-            <div class="w-full sm:w-80 h-48">
-                <card-component [horario]="horario"></card-component>
-            </div>
-        }
+<!-- Main Content -->
+<main class="main-content">
+  <!-- Header Section -->
+  <header class="header">
+    <div>
+      <h1>Visão Geral</h1>
+      <p class="header-subtitle">Dashboard Principal - {{ dataAtual() }}</p>
     </div>
-</div>
+    <div class="user-info">
+      <span>Administrador - Sistema</span>
+      <div class="user-avatar">AS</div>
+    </div>
+  </header>
+
+  <!-- Quick Statistics Row - Padronizada -->
+  <section class="stats-section">
+    @for (estatistica of estatisticasDiarias(); track estatistica.periodo) {
+      <div class="stat-card" 
+           [ngClass]="{
+             'morning': estatistica.periodo === 'Manhã',
+             'afternoon': estatistica.periodo === 'Tarde',
+             'night': estatistica.periodo === 'Noite'
+           }">
+        <div class="stat-number">{{ estatistica.quantidade }}</div>
+        <div class="stat-label">Alunos {{ estatistica.periodo }}</div>
+        <div class="stat-period">{{ estatistica.data }}</div>
+      </div>
+    }
+    <div class="stat-card total">
+      <div class="stat-number">{{ totalGeralAlunos() }}</div>
+      <div class="stat-label">Total Geral</div>
+      <div class="stat-period">Hoje</div>
+    </div>
+  </section>
+
+  <!-- Main Dashboard Grid -->
+  <div class="dashboard-grid">
+    <!-- Student Calendar Section -->
+    <section class="calendar-section">
+      <div class="section-header">
+        <h2 class="section-title">Calendário Estudantil</h2>
+        <button class="btn btn-primary" (click)="verDetalhesCalendario()">Ver Detalhes</button>
+      </div>
+      <div class="calendar-placeholder">
+        📅 Calendário Municipal Integrado
+        <br><small>Eventos acadêmicos e feriados</small>
+      </div>
+    </section>
+
+    <!-- Routes Management -->
+    <section class="routes-section">
+      <div class="section-header">
+        <h2 class="section-title">Itinerários</h2>
+        <button class="btn btn-manage" (click)="gerenciarRotas()">Gerenciar rotas</button>
+      </div>
+      <div class="routes-content">
+        @for (rota of rotas(); track rota.id) {
+          <div class="route-item">
+            <div class="route-info">
+              <h4>{{ rota.nome }}</h4>
+              <p>{{ rota.campus }} • {{ rota.totalAlunos }} alunos</p>
+            </div>
+            <button class="btn btn-primary" (click)="editarRota(rota.id)">Editar</button>
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+
+  <!-- Map Section -->
+  <section class="map-section">
+    <div class="section-header">
+      <h2 class="section-title">Mapa de Rotas</h2>
+      <select 
+        class="filter-select"
+        [value]="filtroMapa()"
+        (change)="atualizarFiltroMapa($any($event.target).value)">
+        <option value="todos">Filtros</option>
+        <option value="manhã">Manhã</option>
+        <option value="tarde">Tarde</option>
+        <option value="noite">Noite</option>
+      </select>
+    </div>
+    <div class="map-placeholder">
+      🗺️ Mapa Interativo de Rotas
+      <div class="map-overlay">
+        📍 Pontos de Parada Ativos
+        @if (filtroMapa() !== 'todos') {
+          <br><small>Filtro: {{ filtroMapa() | titlecase }}</small>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- Horários Section - Padronizada -->
+  <section class="horarios-section">
+    <div class="section-header">
+      <h2 class="section-title">Horários Disponíveis</h2>
+      <div class="controls-group">
+        <button class="btn btn-secondary" (click)="atualizarEstatisticas()">
+          Atualizar Dados
+        </button>
+        @if (selectedHorario()) {
+          <button class="btn btn-outline" (click)="clearSelection()">
+            Limpar Seleção
+          </button>
+        }
+      </div>
+    </div>
+    
+    @if (selectedHorario()) {
+      <div class="selection-info">
+        <strong>Selecionado:</strong> {{ selectedHorario()?.nome }}
+        <span class="total-info">Total de horários: {{ totalHorarios() }}</span>
+      </div>
+    }
+
+    <!-- Cards dinâmicos de horários -->
+    <div class="horarios-grid">
+      @for (horario of horarios(); track horario.id) {
+        <div class="horario-card-wrapper">
+          <div 
+            (click)="selectHorario(horario.id)"
+            [class]="selectedHorarioId() === horario.id ? 
+              'horario-card selected clickable' : 
+              'horario-card clickable'">
+            <card-component [horario]="horario"></card-component>
+          </div>
+        </div>
+      }
+    </div>
+  </section>
+</main>

@@ -1,7 +1,7 @@
-<main>
+<main [class]="bodyClass()">
   <app-sidenav (onToggleSidenav)="onToggleSidenav($event)"></app-sidenav>
-  <app-body>
-    [collapsed]="isSidenavCollapsed"
-    [screenWidth]="screenWidth"
+  <app-body
+    [collapsed]="collapsed()"
+    [screenWidth]="screenWidth()">
   </app-body>
 </main>

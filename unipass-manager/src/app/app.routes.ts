@@ -3,11 +3,11 @@ import { Inicio } from './inicio/inicio';
 import { SolicitacoesEstudantis } from './solicitacoes-estudantis/solicitacoes-estudantis';
 import { Gerenciamento } from './gerenciamento/gerenciamento';
 import { Comunicacao } from './comunicacao/comunicacao';
-import { Administracao } from './administracao/administracao';
-import { Configuracoes } from './configuracoes/configuracoes';
+import { Administracao } from './pages/administracao/administracao';
+import { Configuracoes } from './pages/configuracoes/configuracoes';
 import { AnaliseDeCadastro } from './solicitacoes-estudantis/paginas/analise-de-cadastro/analise-de-cadastro';
 import { Component } from '@angular/core';
-import { CadastroEstudantes } from './administracao/paginas/cadastro-estudantes/cadastro-estudantes';
+import { CadastroEstudantes } from './pages/cadastro-estudantes/cadastro-estudantes';
 
 
 
