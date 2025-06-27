@@ -1,0 +1,206 @@
+<!-- Main Content -->
+<main class="main-content">
+  <!-- Header -->
+  <header class="header">
+    <h1>Validação de Cadastro de Estudantes</h1>
+    <div class="user-info">
+      <span>João Silva</span>
+      <div class="user-avatar">JS</div>
+    </div>
+  </header>
+
+  <!-- Filters Section -->
+  <section class="filters-section">
+    <div class="filters-row">
+      <div class="filter-group">
+        <label for="status-filter">Status</label>
+        <select 
+          id="status-filter"
+          [value]="filtroStatus()"
+          (change)="atualizarFiltroStatus($any($event.target).value)">
+          <option value="">Todos os Status</option>
+          <option value="pendente">Pendente</option>
+          <option value="aprovado">Aprovado</option>
+          <option value="reprovado">Reprovado</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="university-filter">Universidade</label>
+        <select 
+          id="university-filter"
+          [value]="filtroUniversidade()"
+          (change)="atualizarFiltroUniversidade($any($event.target).value)">
+          <option value="">Todas as Universidades</option>
+          <option value="ufpb">UFPB</option>
+          <option value="uepb">UEPB</option>
+          <option value="ifpb">IFPB</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="date-filter">Data de Cadastro</label>
+        <input 
+          type="date" 
+          id="date-filter"
+          [value]="filtroData()"
+          (change)="atualizarFiltroData($any($event.target).value)">
+      </div>
+      <div class="filter-group">
+        <label for="search">Buscar Estudante</label>
+        <input 
+          type="text" 
+          id="search" 
+          placeholder="Nome ou CPF"
+          [value]="termoBusca()"
+          (input)="atualizarTermoBusca($any($event.target).value)">
+      </div>
+      <div class="filter-group">
+        <label>&nbsp;</label>
+        <button class="btn btn-secondary" (click)="limparFiltros()">Limpar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Statistics Cards -->
+  <section class="stats-section">
+    <div class="stat-card pending">
+      <div class="stat-number">{{ estatisticas().pendentes }}</div>
+      <div class="stat-label">Pendentes</div>
+    </div>
+    <div class="stat-card approved">
+      <div class="stat-number">{{ estatisticas().aprovados }}</div>
+      <div class="stat-label">Aprovados</div>
+    </div>
+    <div class="stat-card rejected">
+      <div class="stat-number">{{ estatisticas().reprovados }}</div>
+      <div class="stat-label">Reprovados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number">{{ estatisticas().total }}</div>
+      <div class="stat-label">Total</div>
+    </div>
+  </section>
+
+  <!-- Students List -->
+  <section class="students-section">
+    <div class="section-header">
+      <h2 class="section-title">Lista de Cadastros</h2>
+      <div class="header-actions">
+        <button class="btn btn-primary" (click)="exportarRelatorio()">Exportar Relatório</button>
+      </div>
+    </div>
+
+    <!-- Loading State -->
+    @if (loading()) {
+      <div class="loading-state">
+        <p>Carregando solicitações...</p>
+      </div>
+    }
+
+    <!-- Error State -->
+    @if (error()) {
+      <div class="error-state">
+        <p>{{ error() }}</p>
+        <button class="btn btn-primary" (click)="recarregarDados()">Tentar Novamente</button>
+      </div>
+    }
+    
+    <!-- Table -->
+    @if (!loading() && !error()) {
+      <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Nome do Estudante</th>
+            <th>CPF</th>
+            <th>Universidade</th>
+            <th>Campus</th>
+            <th>Data Nascimento</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (solicitacao of solicitacoesFiltradas(); track solicitacao.id) {
+            <tr>
+              <td>{{ solicitacao.nomeCompleto }}</td>
+              <td>{{ solicitacao.cpf }}</td>
+              <td>{{ solicitacao.universidade }}</td>
+              <td>{{ solicitacao.campus }}</td>
+              <td>{{ solicitacao.dataNascimento }}</td>
+              <td>
+                <span 
+                  class="status-badge"
+                  [ngClass]="{
+                    'status-pending': solicitacao.statusCadastro === 'Pendente',
+                    'status-approved': solicitacao.statusCadastro === 'Aprovado',
+                    'status-rejected': solicitacao.statusCadastro === 'Recusado'
+                  }">
+                  {{ solicitacao.statusCadastro }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button 
+                    class="btn-small btn-view" 
+                    (click)="verDetalhes(solicitacao.id)">
+                    Ver Detalhes
+                  </button>
+                  @if (solicitacao.statusCadastro === 'Pendente') {
+                    <button 
+                      class="btn-small btn-approve" 
+                      (click)="aprovarSolicitacao(solicitacao.id)">
+                      Aprovar
+                    </button>
+                    <button 
+                      class="btn-small btn-reject" 
+                      (click)="reprovarSolicitacao(solicitacao.id)">
+                      Recusar
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      </div>
+    }
+
+    <!-- Pagination -->
+    <div class="pagination">
+      <div class="pagination-info">
+        Mostrando 1-{{ solicitacoesFiltradas().length }} de {{ estatisticas().total }} registros
+      </div>
+      <div class="pagination-controls">
+        <button class="page-btn">Anterior</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn">2</button>
+        <button class="page-btn">3</button>
+        <button class="page-btn">...</button>
+        <button class="page-btn">10</button>
+        <button class="page-btn">Próximo</button>
+      </div>
+    </div>
+  </section>
+
+  @if (modalAberto()) {
+    <div class="backdrop">
+      <div class="modal">
+        <h2>Detalhes da solicitação</h2>
+        @for (e of estudante(); track e.id) {
+          <p>Nome: {{e.nomeCompleto}}</p>
+          <p>CPF: {{e.cpf }}</p>
+          <p>RG: {{e.rg }}</p>
+          <p>Data de nascimento: {{e.dataNascimento }}</p>
+          <p>Universidade: {{e.universidade }}</p>
+          <p>Campus: {{e.campus }}</p>
+          <p>Turno: {{e.turno }}</p>
+          <p>Previsão de conclusão: {{e.previsaoConclusao }}</p>
+          <p>Declaração de vinculo: {{e.declaracaoVinculoUrl }}</p>
+          <p>Comprovante de residência: {{e.comprovanteResidenciaUrl}}</p>
+        }
+        <button class="btn-small modalButton" (click)="fecharModal()">Fechar</button>
+      </div>
+    </div> 
+  }
+</main>
