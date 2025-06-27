@@ -3,13 +3,19 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { EstudantesService, Estudante } from '../../services/estudantes';
 
+
 export interface SolicitacaoEstudante {
   id: number;
-  nomeEstudante: string;
   cpf: string;
+  nomeCompleto: string;
+  rg: string;
+  dataNascimento: string;
   universidade: string;
-  matricula: string;
-  dataCadastro: string;
+  campus: string;
+  turno: string;
+  previsaoConclusao: string;
+  declaracaoVinculoUrl: string;
+  comprovanteResidenciaUrl: string;
   status: 'pendente' | 'aprovado' | 'reprovado';
 }
 
@@ -28,6 +34,7 @@ export interface Estatisticas {
   styleUrl: './solicitacoes-estudantis.css'
 })
 export class SolicitacoesEstudantis implements OnInit {
+
   // Injeta o serviço de estudantes
   private estudantesService = inject(EstudantesService);
 
@@ -41,6 +48,9 @@ export class SolicitacoesEstudantis implements OnInit {
   filtroUniversidade = signal<string>('');
   filtroData = signal<string>('');
   termoBusca = signal<string>('');
+
+  // Signals para Modal
+  modalAberto = signal(false);
 
   // Computed signals para cálculos
   estatisticas = computed((): Estatisticas => {
@@ -166,9 +176,13 @@ export class SolicitacoesEstudantis implements OnInit {
     });
   }
 
-  verDetalhes(id: number): void {
-    // Implementar navegação para detalhes
-    // TODO: Navegar para página de detalhes da solicitação ${id}
+  estudante = signal<Estudante[]>([]); // pra carregar dados no modal;
+  verDetalhes(id: number): void{
+    this.modalAberto.set(true);
+    const estudante_unico = this.solicitacoes().filter(
+      estudante => (estudante.id === id)
+    )
+    this.estudante.set(estudante_unico);
   }
 
   limparFiltros(): void {
@@ -179,7 +193,10 @@ export class SolicitacoesEstudantis implements OnInit {
   }
 
   exportarRelatorio(): void {
-    // Implementar exportação
-    // TODO: Implementar exportação de relatório
+    // ToDo
+  }
+
+  fecharModal(): void {
+    this.modalAberto.set(false)
   }
 }

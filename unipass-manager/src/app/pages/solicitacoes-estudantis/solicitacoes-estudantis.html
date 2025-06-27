@@ -182,4 +182,25 @@
       </div>
     </div>
   </section>
+
+  @if (modalAberto()) {
+    <div class="backdrop">
+      <div class="modal">
+        <h2>Detalhes da solicitação</h2>
+        @for (e of estudante(); track e.id) {
+          <p>Nome: {{e.nomeCompleto}}</p>
+          <p>CPF: {{e.cpf }}</p>
+          <p>RG: {{e.rg }}</p>
+          <p>Data de nascimento: {{e.dataNascimento }}</p>
+          <p>Universidade: {{e.universidade }}</p>
+          <p>Campus: {{e.campus }}</p>
+          <p>Turno: {{e.turno }}</p>
+          <p>Previsão de conclusão: {{e.previsaoConclusao }}</p>
+          <p>Declaração de vinculo: {{e.declaracaoVinculoUrl }}</p>
+          <p>Comprovante de residência: {{e.comprovanteResidenciaUrl}}</p>
+        }
+        <button class="btn-small modalButton" (click)="fecharModal()">Fechar</button>
+      </div>
+    </div> 
+  }
 </main>

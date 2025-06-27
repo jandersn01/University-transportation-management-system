@@ -1,3 +1,5 @@
+/**
+
 import { Component, inject, OnInit } from '@angular/core';
 import { Estudante, EstudantesService } from '../../../../services/estudantes';
 import { RouterModule } from '@angular/router';
@@ -37,4 +39,4 @@ export class AnaliseDeCadastro implements OnInit {
     this.carregarSolicitacoes();
   }
 
-}
+} */

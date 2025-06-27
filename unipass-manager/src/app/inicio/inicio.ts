@@ -25,7 +25,7 @@ export interface Rota {
 @Component({
   selector: 'app-inicio',
   standalone: true,
-  imports: [CommonModule, CardComponent],
+  imports: [CommonModule, /**CardComponent*/],
   templateUrl: './inicio.html',
   styleUrl: './inicio.css'
 })

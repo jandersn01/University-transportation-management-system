@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { Inicio } from './inicio/inicio';
 import { SolicitacoesEstudantis } from './pages/solicitacoes-estudantis/solicitacoes-estudantis';
 import { Administracao } from './pages/administracao/administracao';
-import { AnaliseDeCadastro } from './pages/solicitacoes-estudantis/paginas/analise-de-cadastro/analise-de-cadastro';
+//import { AnaliseDeCadastro } from './pages/solicitacoes-estudantis/paginas/analise-de-cadastro/analise-de-cadastro';
 import { CadastroEstudantes } from './pages/cadastro-estudantes/cadastro-estudantes';
 import { NotFound } from './pages/not-found/not-found';
 
@@ -10,7 +10,7 @@ export const routes: Routes = [
     { path: '', redirectTo: '/inicio', pathMatch: 'full' },
     {path: 'inicio', component: Inicio },
     {path: 'solicitacoes-estudantis', component: SolicitacoesEstudantis, children: [
-        {path: 'analisedecadastro', component: AnaliseDeCadastro}
+        //{path: 'analisedecadastro', component: AnaliseDeCadastro}
     ]},
     {path:'administracao', component: Administracao,
         children:[
