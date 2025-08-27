@@ -90,7 +90,7 @@ export class Administracao {
       this.estudanteService.cadastrar(this.cadastroForm.value).subscribe({
         next: () => {
           this.mensagem.set('Estudante cadastrado com sucesso!');
-          this.cadastroForm.reset();
+          //itthis.cadastroForm.reset();
           this.formSubmitted.set(false);
           this.universidadeSelecionada.set('');
           this.loading.set(false);
