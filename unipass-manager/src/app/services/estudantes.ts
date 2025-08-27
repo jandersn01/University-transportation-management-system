@@ -22,7 +22,7 @@ export interface Estudante {
 })
 export class EstudantesService {
   private http = inject(HttpClient)
-  private readonly serviceUrl = 'http://localhost:3000/estudantes';
+  private readonly serviceUrl = 'http://localhost:8080/api/students';
 
   //Post
   cadastrar(dadosEstudante: Omit<Estudante, 'id' | 'statusCadastro'>): Observable<Estudante> {
@@ -32,7 +32,7 @@ export class EstudantesService {
 
   //Get
   getSolicitaçõesPendentes(): Observable<Estudante[]> {
-    return this.http.get<Estudante[]>(`${this.serviceUrl}?statusCadastro=Pendente`)
+    return this.http.get<Estudante[]>(`${this.serviceUrl}?statusCadastro=PENDENTE`)
   }
 
   //Get All
