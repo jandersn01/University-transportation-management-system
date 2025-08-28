@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Inicio } from './inicio/inicio';
 import { SolicitacoesEstudantis } from './pages/solicitacoes-estudantis/solicitacoes-estudantis';
 import { Administracao } from './pages/administracao/administracao';
+import { Gerenciamento } from './pages/gerenciamento/gerenciamento';
 //import { AnaliseDeCadastro } from './pages/solicitacoes-estudantis/paginas/analise-de-cadastro/analise-de-cadastro';
 import { CadastroEstudantes } from './pages/cadastro-estudantes/cadastro-estudantes';
 import { NotFound } from './pages/not-found/not-found';
@@ -18,7 +19,7 @@ export const routes: Routes = [
         ]
     },
     // Redirecionamentos para páginas não implementadas
-    {path: 'gerenciamento', redirectTo: '/404', pathMatch: 'full'},
+    {path: 'gerenciamento', component: Gerenciamento},
     {path: 'comunicacao', redirectTo: '/404', pathMatch: 'full'},
     {path: 'configuracoes', redirectTo: '/404', pathMatch: 'full'},
     // Página 404
