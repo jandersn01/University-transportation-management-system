@@ -2,6 +2,18 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
+
+export interface EstudanteListDTO {
+  id: number;
+  nomeCompleto: string;
+  cpf: string;
+  universidade: string;
+  campus: string;
+  dataNascimento: string;
+  statusCadastro: 'PENDENTE' | 'APROVADO' | 'RECUSADO'; // Backend usa enum em MAIÚSCULO
+}
+
+
 export interface Estudante {
   id: number;
   cpf: string;
@@ -14,7 +26,7 @@ export interface Estudante {
   previsaoConclusao: string;
   declaracaoVinculoUrl: string;
   comprovanteResidenciaUrl: string;
-  statusCadastro: 'Pendente' | 'Aprovado' | 'Recusado';
+  statusCadastro: 'PENDENTE' | 'APROVADO' | 'RECUSADO';
 }
 
 @Injectable({
@@ -31,17 +43,21 @@ export class EstudantesService {
   }
 
   //Get
-  getSolicitaçõesPendentes(): Observable<Estudante[]> {
-    return this.http.get<Estudante[]>(`${this.serviceUrl}?statusCadastro=PENDENTE`)
+  getSolicitaçõesPendentes(): Observable<EstudanteListDTO[]> {
+    return this.http.get<EstudanteListDTO[]>(`${this.serviceUrl}?statusCadastro=PENDENTE`)
   }
 
   //Get All
-  getTodosEstudantes(): Observable<Estudante[]> {
-    return this.http.get<Estudante[]>(this.serviceUrl);
+  getTodosEstudantes(): Observable<EstudanteListDTO[]> {
+    return this.http.get<EstudanteListDTO[]>(this.serviceUrl);
+  }
+
+  getEstudantePorId(id: number): Observable<Estudante> {
+    return this.http.get<Estudante>(`${this.serviceUrl}/${id}`);
   }
 
   //Patch
-  atualizarStatus(id: number, novoStatus: 'Aprovado' | 'Recusado'): Observable<Estudante>{
+  atualizarStatus(id: number, novoStatus: 'APROVADO' | 'RECUSADO'): Observable<Estudante>{
     return this.http.patch<Estudante>(
       `${this.serviceUrl}/${id}`, { statusCadastro: novoStatus }
     )
