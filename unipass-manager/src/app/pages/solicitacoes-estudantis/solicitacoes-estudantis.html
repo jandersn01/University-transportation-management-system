@@ -185,24 +185,28 @@
 
   @if (modalAberto()) {
     <div class="backdrop">
-      <div class="modal">
-        <h2>Detalhes da solicitação</h2>
+      <div class="modal modal-large">
+        <h2>Detalhes do Estudante</h2>
         @if (loadingDetalhes()) {
-          <p>Carregando...</p>
+          <p>Carregando detalhes...</p>
         } @else if (estudanteDetalhes()) {
-          <p>Nome: {{estudanteDetalhes()!.nomeCompleto}}</p>
-          <p>CPF: {{estudanteDetalhes()!.cpf}}</p>
-          <p>RG: {{estudanteDetalhes()!.rg}}</p>
-          <p>Data de nascimento: {{estudanteDetalhes()!.dataNascimento}}</p>
-          <p>Universidade: {{estudanteDetalhes()!.universidade}}</p>
-          <p>Campus: {{estudanteDetalhes()!.campus}}</p>
-          <p>Turno: {{estudanteDetalhes()!.turno}}</p>
-          <p>Previsão de conclusão: {{estudanteDetalhes()!.previsaoConclusao}}</p>
-          <p>Declaração de vínculo: {{estudanteDetalhes()!.declaracaoVinculoUrl}}</p>
-          <p>Comprovante de residência: {{estudanteDetalhes()!.comprovanteResidenciaUrl}}</p>
+          <div class="detalhes-grid">
+            <p><strong>Nome:</strong> {{ estudanteDetalhes()!.nomeCompleto }}</p>
+            <p><strong>CPF:</strong> {{ estudanteDetalhes()!.cpf }}</p>
+            <p><strong>RG:</strong> {{ estudanteDetalhes()!.rg }}</p>
+            <p><strong>Data de nascimento:</strong> {{ estudanteDetalhes()!.dataNascimento }}</p>
+            <p><strong>Universidade:</strong> {{ estudanteDetalhes()!.universidade }}</p>
+            <p><strong>Campus:</strong> {{ estudanteDetalhes()!.campus }}</p>
+            <p><strong>Turno:</strong> {{ estudanteDetalhes()!.turno }}</p>
+            <p><strong>Previsão de conclusão:</strong> {{ estudanteDetalhes()!.previsaoConclusao }}</p>
+            <p><strong>Declaração de vínculo:</strong> {{ estudanteDetalhes()!.declaracaoVinculoUrl }}</p>
+            <p><strong>Comprovante de residência:</strong> {{ estudanteDetalhes()!.comprovanteResidenciaUrl }}</p>
+          </div>
         }
-        <button class="btn-small modalButton" (click)="fecharModal()">Fechar</button>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="fecharModal()">Fechar</button>
+        </div>
       </div>
-    </div> 
+    </div>
   }
 </main>

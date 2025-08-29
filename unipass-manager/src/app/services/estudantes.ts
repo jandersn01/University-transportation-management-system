@@ -56,11 +56,19 @@ export class EstudantesService {
     return this.http.get<Estudante>(`${this.serviceUrl}/${id}`);
   }
 
+  getEstudantesAprovados(): Observable<EstudanteListDTO[]> {
+    return this.http.get<EstudanteListDTO[]>(`${this.serviceUrl}?statusCadastro=APROVADO`);
+  }
+
   //Patch
   atualizarStatus(id: number, novoStatus: 'APROVADO' | 'RECUSADO'): Observable<Estudante>{
     return this.http.patch<Estudante>(
       `${this.serviceUrl}/${id}`, { statusCadastro: novoStatus }
     )
+  }
+
+  revogarEstudante(payload: { id: number; motivo: string; justificativa: string }) {
+    return this.http.delete(`${this.serviceUrl}/${payload.id}`);
   }
 
   constructor() { }
