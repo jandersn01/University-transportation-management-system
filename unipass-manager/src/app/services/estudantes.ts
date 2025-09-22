@@ -63,7 +63,7 @@ export class EstudantesService {
   //Patch
   atualizarStatus(id: number, novoStatus: 'APROVADO' | 'RECUSADO'): Observable<Estudante>{
     return this.http.patch<Estudante>(
-      `${this.serviceUrl}/${id}`, { statusCadastro: novoStatus }
+      `${this.serviceUrl}/${id}/status`, { status: novoStatus }
     )
   }
 
