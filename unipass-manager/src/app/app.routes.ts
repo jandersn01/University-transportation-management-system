@@ -5,10 +5,13 @@ import { Administracao } from './pages/administracao/administracao';
 //import { AnaliseDeCadastro } from './pages/solicitacoes-estudantis/paginas/analise-de-cadastro/analise-de-cadastro';
 import { CadastroEstudantes } from './pages/cadastro-estudantes/cadastro-estudantes';
 import { NotFound } from './pages/not-found/not-found';
+import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './services/auth.guard';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/inicio', pathMatch: 'full' },
-    {path: 'inicio', component: Inicio },
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: 'login', component: LoginComponent },
+    { path: 'inicio', component: Inicio, canActivate: [AuthGuard] },
     {path: 'solicitacoes-estudantis', component: SolicitacoesEstudantis, children: [
         //{path: 'analisedecadastro', component: AnaliseDeCadastro}
     ]},
@@ -24,5 +27,5 @@ export const routes: Routes = [
     // Página 404
     {path: '404', component: NotFound},
     // Wildcard route para qualquer rota não encontrada
-    {path: '**', redirectTo: '/404'}
+    {path: '**', redirectTo: '/login'}
 ];
