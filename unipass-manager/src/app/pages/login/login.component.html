@@ -1,6 +1,12 @@
 <div class="login-container">
-  <h2>Login</h2>
   <form (ngSubmit)="login()">
+    <div class="login-logo">
+      <div class="login-logo-mark">U</div>
+      <div class="login-logo-text">UniPass</div>
+    </div>
+
+    <h2>Entrar</h2>
+
     <label for="username">Usuário</label>
     <input id="username" [(ngModel)]="username" name="username" type="text" required>
 
@@ -8,5 +14,9 @@
     <input id="password" [(ngModel)]="password" name="password" type="password" required>
 
     <button type="submit">Entrar</button>
+
+    <button type="button" class="forgot-password" (click)="onForgotPassword()">
+      Esqueci minha senha
+    </button>
   </form>
 </div>

@@ -20,4 +20,9 @@ export class LoginComponent {
     localStorage.setItem('authToken', 'example-token');
     this.router.navigate(['/inicio']);
   }
+
+  onForgotPassword() {
+    // Placeholder simples: aqui você pode futuramente integrar com fluxo de recuperação real
+    alert('Recuperação de senha ainda não está implementada. Entre em contato com a administração do sistema.');
+  }
 }

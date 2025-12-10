@@ -1,41 +1,114 @@
 .login-container {
+  min-height: 100vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100vh;
-  background-color: #f5f5f5;
-}
-
-.login-container h2 {
-  margin-bottom: 20px;
+  padding: 20px;
+  background-color: var(--background-light);
 }
 
 .login-container form {
   display: flex;
   flex-direction: column;
-  width: 300px;
+  width: 100%;
+  max-width: 360px;
+  padding: 24px 28px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-light);
+  background-color: #ffffff;
+}
+
+.login-container h2 {
+  margin-bottom: 16px;
+  font-size: 22px;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.login-logo-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 20px;
+  box-shadow: var(--shadow-light);
+}
+
+.login-logo-text {
+  margin-left: 10px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-primary);
 }
 
 .login-container label {
-  margin-bottom: 5px;
+  margin-bottom: 4px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 14px;
 }
 
 .login-container input {
-  margin-bottom: 15px;
-  padding: 10px;
-  font-size: 16px;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.login-container input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 1px rgba(52, 152, 219, 0.15);
 }
 
 .login-container button {
-  padding: 10px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: white;
+  margin-top: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 4px;
   border: none;
   cursor: pointer;
+  background-color: var(--primary-color);
+  color: #ffffff;
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
 .login-container button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.login-container button:active {
+  transform: translateY(0);
+}
+
+.forgot-password {
+  margin-top: 12px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--primary-color);
+  font-size: 13px;
+  font-weight: 500;
+  align-self: flex-end;
+  cursor: pointer;
+}
+
+.forgot-password:hover {
+  text-decoration: underline;
 }
