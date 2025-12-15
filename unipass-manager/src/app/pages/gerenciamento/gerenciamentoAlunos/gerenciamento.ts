@@ -1,7 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EstudantesService, Estudante, EstudanteListDTO } from '../../services/estudantes';
+import { EstudantesService, Estudante, EstudanteListDTO } from '../../../services/estudantes';
 
 export interface EstudanteAtivo extends EstudanteListDTO {
   frequencia: number;

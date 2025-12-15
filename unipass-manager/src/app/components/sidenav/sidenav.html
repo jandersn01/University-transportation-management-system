@@ -3,22 +3,52 @@
         <button class="logo" (click)="toggleCollapse()">U</button>
         @if(collapsed){
             <div class="logo-text">UniPass</div>
-        <button class="btn-close" (click)="closeSidenav()">
-            <i class="fa fa-times close icon"></i>
-        </button> 
+            <button class="btn-close" (click)="closeSidenav()">
+                <i class="fa fa-times close icon"></i>
+            </button> 
         }
-           
     </div>
 
     <ul class="sidenav-nav">
-        @for(data of navData; track data.routeLink){
+        @for(data of navData; track data.label){
             <li class="sidenav-nav-item">
-                <a href="" class="sidenav-nav-link" [routerLink]="[data.routeLink]">
-                    <i class="sidenav-link-icon" [class]="data.icon"></i>
-                    @if(collapsed){
-                        <span class="sidenav-link-text">{{data.label}}</span>
-                    }  
-                </a>
+                
+                @if(data.items && data.items.length > 0) {
+                    <a class="sidenav-nav-link" (click)="handleClick(data)">
+                        <i class="sidenav-link-icon" [class]="data.icon"></i>
+                        @if(collapsed){
+                            <span class="sidenav-link-text">{{data.label}}</span>
+                            <i class="fa fa-chevron-right menu-arrow" 
+                               [class.rotate]="data.expanded"></i>
+                        }
+                    </a>
+
+                    @if(collapsed && data.expanded) {
+                        <ul class="sub-menu">
+                            @for(subItem of data.items; track subItem.label) {
+                                <li class="sub-menu-item">
+                                    <a class="sidenav-nav-link sub-menu-link" 
+                                       [routerLink]="[subItem.routeLink]"
+                                       routerLinkActive="active-sub">
+                                        <i class="sidenav-link-icon sub-icon" [class]="subItem.icon || 'fa fa-circle'"></i>
+                                        <span class="sidenav-link-text">{{subItem.label}}</span>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    }
+                } 
+                
+                @else {
+                    <a class="sidenav-nav-link" 
+                       [routerLink]="[data.routeLink]"
+                       routerLinkActive="active">
+                        <i class="sidenav-link-icon" [class]="data.icon"></i>
+                        @if(collapsed){
+                            <span class="sidenav-link-text">{{data.label}}</span>
+                        }  
+                    </a>
+                }
             </li>
         }     
     </ul>
