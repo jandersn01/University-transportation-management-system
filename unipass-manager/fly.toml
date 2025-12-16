@@ -1,15 +1,12 @@
-# fly.toml app configuration file generated for university-transportation-management-system on 2025-12-16T03:53:43Z
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
+# fly.toml app configuration file
 app = 'university-transportation-management-system'
 primary_region = 'gru'
 
 [build]
+  dockerfile = "Dockerfile"
 
 [http_service]
-  internal_port = 3000
+  internal_port = 80
   force_https = true
   auto_stop_machines = 'stop'
   auto_start_machines = true

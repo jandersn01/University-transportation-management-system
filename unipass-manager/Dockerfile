@@ -1,46 +1,32 @@
-# syntax = docker/dockerfile:1
+# Etapa 1: Construção (Build do Angular)
+FROM node:20-alpine as build
 
-# Adjust NODE_VERSION as desired
-ARG NODE_VERSION=22.21.1
-FROM node:${NODE_VERSION}-slim AS base
-
-LABEL fly_launch_runtime="Node.js"
-
-# Node.js app lives here
 WORKDIR /app
 
-# Set production environment
-ENV NODE_ENV="production"
+# Copia os arquivos de dependências
+COPY package*.json ./
 
+# Instala as dependências
+RUN npm install
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp pkg-config python-is-python3
-
-# Install node modules
-COPY package-lock.json package.json ./
-RUN npm ci --include=dev
-
-# Copy application code
+# Copia todo o código fonte
 COPY . .
 
-# Build application
+# Gera o build de produção
 RUN npm run build
 
-# Remove development dependencies
-RUN npm prune --omit=dev
+# Etapa 2: Servidor (NGINX) - A imagem leve para produção
+FROM nginx:alpine
 
+# Copia o resultado do build da etapa anterior para a pasta do NGINX
+# O caminho /browser é crucial para o Angular 17+
+COPY --from=build /app/dist/unipass-manager/browser /usr/share/nginx/html
 
-# Final stage for app image
-FROM base
+# Copia sua configuração personalizada do Nginx
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy built application
-COPY --from=build /app /app
-
+# Expõe a porta 80
 EXPOSE 80
 
-# --- ADICIONE ESTA LINHA ABAIXO ---
+# Comando para manter o Nginx rodando em primeiro plano
 CMD ["nginx", "-g", "daemon off;"]
