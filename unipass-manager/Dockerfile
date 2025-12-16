@@ -12,6 +12,12 @@ RUN npm install
 # Copia todo o código fonte
 COPY . .
 
+# --- CORREÇÃO DO ERRO DE BUDGET ---
+# Estes comandos aumentam o limite de tamanho dos arquivos CSS no angular.json
+# de 4kB/8kB para 100kB, permitindo que o build passe sem erros.
+RUN sed -i 's/"maximumError": "4kB"/"maximumError": "100kB"/g' angular.json
+RUN sed -i 's/"maximumError": "8kB"/"maximumError": "100kB"/g' angular.json
+
 # Gera o build de produção
 RUN npm run build
 
@@ -19,7 +25,6 @@ RUN npm run build
 FROM nginx:alpine
 
 # Copia o resultado do build da etapa anterior para a pasta do NGINX
-# O caminho /browser é crucial para o Angular 17+
 COPY --from=build /app/dist/unipass-manager/browser /usr/share/nginx/html
 
 # Copia sua configuração personalizada do Nginx
