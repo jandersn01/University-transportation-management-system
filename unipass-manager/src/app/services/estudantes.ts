@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 
 export interface EstudanteListDTO {
@@ -33,17 +34,19 @@ export interface Estudante {
   providedIn: 'root'
 })
 export class EstudantesService {
-  private http = inject(HttpClient)
-  private readonly serviceUrl = 'http://localhost:8080/api/students';
+  private readonly http = inject(HttpClient)
+
+  private readonly baseUrl = environment.apiUrl;
+  private readonly serviceUrl = `${this.baseUrl}/api/students`;
 
   //Post
   cadastrar(dadosEstudante: Omit<Estudante, 'id' | 'statusCadastro'>): Observable<Estudante> {
-    const payload = {... dadosEstudante, statusCadastro: 'Pendente' as const };
+    const payload = {... dadosEstudante, statusCadastro: 'PENDENTE' as const };
     return this.http.post<Estudante>(this.serviceUrl, payload);
   }
 
   //Get
-  getSolicitaçõesPendentes(): Observable<EstudanteListDTO[]> {
+  getSolicitacoesPendentes(): Observable<EstudanteListDTO[]> {
     return this.http.get<EstudanteListDTO[]>(`${this.serviceUrl}?statusCadastro=PENDENTE`)
   }
 
@@ -71,5 +74,17 @@ export class EstudantesService {
     return this.http.delete(`${this.serviceUrl}/${payload.id}`);
   }
 
-  constructor() { }
+  //constructor() { }
+}
+@Injectable({ providedIn: 'root' })
+export class ViagemService {
+
+  private readonly http = inject(HttpClient);
+  private readonly baseUrl = environment.apiUrl;
+
+  //constructor(private http: HttpClient) {}
+
+  listar() {
+    return this.http.get(`${this.baseUrl}/api/viagens`);
+  }
 }
