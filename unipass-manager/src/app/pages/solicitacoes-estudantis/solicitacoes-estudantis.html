@@ -131,9 +131,9 @@
                 <span 
                   class="status-badge"
                   [ngClass]="{
-                    'status-pending': solicitacao.statusCadastro === 'Pendente',
-                    'status-approved': solicitacao.statusCadastro === 'Aprovado',
-                    'status-rejected': solicitacao.statusCadastro === 'Recusado'
+                    'status-pending': solicitacao.statusCadastro === 'PENDENTE',
+                    'status-approved': solicitacao.statusCadastro === 'APROVADO',
+                    'status-rejected': solicitacao.statusCadastro === 'RECUSADO'
                   }">
                   {{ solicitacao.statusCadastro }}
                 </span>
@@ -145,7 +145,7 @@
                     (click)="verDetalhes(solicitacao.id)">
                     Ver Detalhes
                   </button>
-                  @if (solicitacao.statusCadastro === 'Pendente') {
+                  @if (solicitacao.statusCadastro === 'PENDENTE') {
                     <button 
                       class="btn-small btn-approve" 
                       (click)="aprovarSolicitacao(solicitacao.id)">
@@ -185,22 +185,28 @@
 
   @if (modalAberto()) {
     <div class="backdrop">
-      <div class="modal">
-        <h2>Detalhes da solicitação</h2>
-        @for (e of estudante(); track e.id) {
-          <p>Nome: {{e.nomeCompleto}}</p>
-          <p>CPF: {{e.cpf }}</p>
-          <p>RG: {{e.rg }}</p>
-          <p>Data de nascimento: {{e.dataNascimento }}</p>
-          <p>Universidade: {{e.universidade }}</p>
-          <p>Campus: {{e.campus }}</p>
-          <p>Turno: {{e.turno }}</p>
-          <p>Previsão de conclusão: {{e.previsaoConclusao }}</p>
-          <p>Declaração de vinculo: {{e.declaracaoVinculoUrl }}</p>
-          <p>Comprovante de residência: {{e.comprovanteResidenciaUrl}}</p>
+      <div class="modal modal-large">
+        <h2>Detalhes do Estudante</h2>
+        @if (loadingDetalhes()) {
+          <p>Carregando detalhes...</p>
+        } @else if (estudanteDetalhes()) {
+          <div class="detalhes-grid">
+            <p><strong>Nome:</strong> {{ estudanteDetalhes()!.nomeCompleto }}</p>
+            <p><strong>CPF:</strong> {{ estudanteDetalhes()!.cpf }}</p>
+            <p><strong>RG:</strong> {{ estudanteDetalhes()!.rg }}</p>
+            <p><strong>Data de nascimento:</strong> {{ estudanteDetalhes()!.dataNascimento }}</p>
+            <p><strong>Universidade:</strong> {{ estudanteDetalhes()!.universidade }}</p>
+            <p><strong>Campus:</strong> {{ estudanteDetalhes()!.campus }}</p>
+            <p><strong>Turno:</strong> {{ estudanteDetalhes()!.turno }}</p>
+            <p><strong>Previsão de conclusão:</strong> {{ estudanteDetalhes()!.previsaoConclusao }}</p>
+            <p><strong>Declaração de vínculo:</strong> {{ estudanteDetalhes()!.declaracaoVinculoUrl }}</p>
+            <p><strong>Comprovante de residência:</strong> {{ estudanteDetalhes()!.comprovanteResidenciaUrl }}</p>
+          </div>
         }
-        <button class="btn-small modalButton" (click)="fecharModal()">Fechar</button>
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="fecharModal()">Fechar</button>
+        </div>
       </div>
-    </div> 
+    </div>
   }
 </main>
