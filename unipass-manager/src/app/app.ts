@@ -2,6 +2,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { Sidenav } from './components/sidenav/sidenav';
 import { Body } from './body/body';
 import { LayoutService, SidenavToggle } from './services/layout.service';
+import { LoginComponent } from './pages/login/login.component';
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -31,3 +34,14 @@ export class App implements OnInit {
     this.layoutService.updateLayout(data);
   }
 }
+
+@NgModule({
+  imports: [
+    FormsModule,
+    App,
+    LoginComponent
+  ],
+  providers: [],
+  bootstrap: [App]
+})
+export class AppModule { }
