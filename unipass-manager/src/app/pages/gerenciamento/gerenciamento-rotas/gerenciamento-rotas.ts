@@ -1,64 +1,72 @@
-import { Component, signal, computed, OnInit } from '@angular/core';
+import { Component, signal, computed, OnInit, AfterViewInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import * as L from 'leaflet';
 
-// --- Interfaces (Modelos de Dados) ---
-
-export type Turno = 'MANHA' | 'TARDE' | 'NOITE';
-
-export interface Rota {
-  id: number;
-  nome: string;
-  turno: Turno;
-  universidades: string[];
-}
-
-// Interface para o formulário (sem ID, pois na criação ainda não existe)
-export interface RotaForm {
-  id?: number; // Opcional, existe apenas na edição
-  nome: string;
-  turno: Turno;
-  universidades: string[];
-}
-
-export interface EstatisticasRotas {
-  total: number;
-  manha: number;
-  tarde: number;
-  noite: number;
-}
+// Importe TUDO do serviço (Interfaces + Classe do Serviço)
+import { 
+  RotasService, 
+  Rota, 
+  RotaForm, 
+  EstatisticasRotas 
+} from '../../../services/rotas.service'; 
+// ATENÇÃO: Confirme se o caminho '../../../services/rotas.service' está correto. 
+// Se o arquivo estiver em src/app/services/rotas.service.ts e este componente em 
+// src/app/pages/gerenciamento/gerenciamento-rotas/gerenciamento-rotas.ts, o caminho está ok.
 
 @Component({
   selector: 'app-gerenciamento-rotas',
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './gerenciamento-rotas.html',
-  styleUrl: './gerenciamento-rotas.css' // Corrigi para .css conforme seu padrão
+  styleUrl: './gerenciamento-rotas.css'
 })
-export class GerenciamentoRotas implements OnInit {
+export class GerenciamentoRotas implements OnInit, AfterViewInit, OnDestroy {
 
-  // --- Constantes de Domínio ---
-  readonly listaUniversidades = ['UFPB', 'UEPB', 'IFPB', 'UNIPE', 'FPB', 'Maurício de Nassau'];
+  // Injeção de Dependência do Serviço
+  private rotasService = inject(RotasService);
+
+  // Acesso às constantes via Serviço (Getter para usar no template)
+  get listaUniversidades() { return this.rotasService.listaUniversidades; }
+
+  // --- Variáveis do Leaflet ---
+  private map: L.Map | undefined;
+  private currentRouteLayer: L.Polyline | undefined;
+  private markersLayer: L.LayerGroup | undefined;
+
+  // --- Ícones Personalizados (Visualização Realista) ---
+  // Ícone Verde para Início/Fim (Bayeux)
+  private iconInicio = L.divIcon({
+    html: '<div style="background-color: #27ae60; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>',
+    className: 'custom-div-icon',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7], // Centraliza o ponto
+    popupAnchor: [0, -8]
+  });
+
+  // Ícone Vermelho para Universidades
+  private iconUniversidade = L.divIcon({
+    html: '<div style="background-color: #c0392b; width: 14px; height: 14px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.5);"></div>',
+    className: 'custom-div-icon',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -8]
+  });
 
   // --- Signals de Dados (Estado) ---
   rotas = signal<Rota[]>([]);
-  
-  // Rota selecionada na tabela (para destacar no mapa ou editar)
   rotaSelecionada = signal<Rota | null>(null);
-  
-  // Rota temporária para exclusão
   rotaParaExcluir = signal<Rota | null>(null);
 
   // --- Signals de Estado da UI ---
   loading = signal<boolean>(false);
-  editando = signal<boolean>(false); // false = Criando, true = Editando
+  editando = signal<boolean>(false);
 
   // --- Signals dos Modais ---
   modalFormularioAberto = signal(false);
   modalExclusaoAberto = signal(false);
 
   // --- Signals do Formulário ---
-  // Inicializamos com um estado vazio padrão
   formRota = signal<RotaForm>({ 
     nome: '', 
     turno: 'MANHA', 
@@ -70,7 +78,7 @@ export class GerenciamentoRotas implements OnInit {
   filtroUniversidade = signal<string>('');
   termoBusca = signal<string>('');
 
-  // --- Computed: Estatísticas em Tempo Real ---
+  // --- Computed: Estatísticas ---
   estatisticas = computed((): EstatisticasRotas => {
     const lista = this.rotas();
     return {
@@ -81,66 +89,126 @@ export class GerenciamentoRotas implements OnInit {
     };
   });
 
-  // --- Computed: Listagem Filtrada ---
+  // --- Computed: Filtragem ---
   rotasFiltradas = computed(() => {
     let lista = this.rotas();
 
-    // 1. Filtro de Turno
     if (this.filtroTurno()) {
       lista = lista.filter(r => r.turno === this.filtroTurno());
     }
-
-    // 2. Filtro de Universidade
     if (this.filtroUniversidade()) {
       const uni = this.filtroUniversidade();
       lista = lista.filter(r => r.universidades.includes(uni));
     }
-
-    // 3. Filtro de Busca (Nome)
     if (this.termoBusca()) {
       const termo = this.termoBusca().toLowerCase();
       lista = lista.filter(r => r.nome.toLowerCase().includes(termo));
     }
-
     return lista;
   });
 
   // --- Ciclo de Vida ---
   ngOnInit(): void {
-    this.carregarDadosIniciais();
+    this.carregarDados();
   }
 
-  // --- Métodos de Carga (Simulação de Backend) ---
-  carregarDadosIniciais(): void {
-    this.loading.set(true);
-    
-    // Simulando delay de rede
-    setTimeout(() => {
-      const dadosMock: Rota[] = [
-        { id: 1, nome: 'Circular Bancários / UFPB', turno: 'MANHA', universidades: ['UFPB', 'UNIPE'] },
-        { id: 2, nome: 'Integração Centro / IFPB', turno: 'TARDE', universidades: ['IFPB'] },
-        { id: 3, nome: 'Rota Zona Sul / UEPB', turno: 'NOITE', universidades: ['UEPB', 'Maurício de Nassau'] },
-        { id: 4, nome: 'Expresso Valentina', turno: 'MANHA', universidades: ['UFPB', 'IFPB'] },
-        { id: 5, nome: 'Interbairros / UNIPE', turno: 'NOITE', universidades: ['UNIPE', 'FPB'] },
-      ];
-      
-      this.rotas.set(dadosMock);
-      this.loading.set(false);
-    }, 800);
+  ngAfterViewInit(): void {
+    this.initMap();
   }
 
-  // --- Métodos de Interação da Tabela ---
-  selecionarRota(rota: Rota): void {
-    // Se clicar na mesma, deseleciona. Se for outra, seleciona.
-    if (this.rotaSelecionada()?.id === rota.id) {
-      this.rotaSelecionada.set(null);
-    } else {
-      this.rotaSelecionada.set(rota);
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
     }
   }
 
-  // --- Métodos do Formulário (CRUD) ---
-  
+  // --- Lógica do Mapa (Leaflet) ---
+  private initMap(): void {
+    // Centraliza em um ponto médio entre Bayeux e JP
+    this.map = L.map('map').setView([-7.1249, -34.8800], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(this.map);
+
+    this.markersLayer = L.layerGroup().addTo(this.map);
+  }
+
+  private limparMapa(): void {
+    if (this.currentRouteLayer) {
+      this.currentRouteLayer.remove();
+    }
+    if (this.markersLayer) {
+      this.markersLayer.clearLayers();
+    }
+    // Reseta visualização
+    this.map?.setView([-7.1249, -34.8800], 13);
+  }
+
+  private desenharRotaNoMapa(rota: Rota): void {
+    if (!this.map) return;
+    this.limparMapa();
+
+    // 1. Adiciona Marcadores
+    if (rota.paradas) {
+      rota.paradas.forEach((parada, index) => {
+        // Lógica para ícones:
+        // Primeiro (0) e Último = Bayeux (Ícone Verde)
+        // Intermediários = Universidades (Ícone Vermelho)
+        const ehInicioOuFim = index === 0 || index === rota.paradas!.length - 1;
+        const iconeParaUsar = ehInicioOuFim ? this.iconInicio : this.iconUniversidade;
+
+        L.marker(parada.coords, { icon: iconeParaUsar })
+          .bindPopup(`<b>${parada.nome}</b>`)
+          .addTo(this.markersLayer!);
+      });
+    }
+
+    // 2. Desenha a linha da rota com ANIMAÇÃO (Classe CSS)
+    if (rota.caminho && rota.caminho.length > 0) {
+      this.currentRouteLayer = L.polyline(rota.caminho, {
+        color: '#2980b9', // Cor da linha
+        weight: 5,        // Espessura
+        opacity: 0.8,
+        
+        // --- AQUI ESTÁ A MÁGICA DA ANIMAÇÃO ---
+        className: 'flowing-dash-animation' 
+        
+      }).addTo(this.map);
+
+      // Ajusta o zoom para caber a rota inteira com uma margem (padding)
+      this.map.fitBounds(this.currentRouteLayer.getBounds(), { padding: [50, 50] });
+    }
+  }
+
+  // --- Métodos de Dados (Consumindo Service) ---
+  carregarDados(): void {
+    this.loading.set(true);
+    this.rotasService.getRotas().subscribe({
+      next: (dados) => {
+        this.rotas.set(dados);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Erro ao carregar rotas', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  // --- Interações da UI ---
+  selecionarRota(rota: Rota): void {
+    if (this.rotaSelecionada()?.id === rota.id) {
+      this.rotaSelecionada.set(null);
+      this.limparMapa();
+    } else {
+      this.rotaSelecionada.set(rota);
+      this.desenharRotaNoMapa(rota);
+    }
+  }
+
+  // --- CRUD (Via Service) ---
   abrirModalCriacao(): void {
     this.editando.set(false);
     this.resetarFormulario();
@@ -149,7 +217,6 @@ export class GerenciamentoRotas implements OnInit {
 
   editarRota(rota: Rota): void {
     this.editando.set(true);
-    // Clona o objeto para não alterar a tabela em tempo real antes de salvar
     this.formRota.set({
       id: rota.id,
       nome: rota.nome,
@@ -161,10 +228,8 @@ export class GerenciamentoRotas implements OnInit {
 
   salvarRota(event: Event): void {
     event.preventDefault();
-    
     const formValues = this.formRota();
     
-    // Validação simples
     if (!formValues.nome || formValues.universidades.length === 0) {
       alert('Preencha o nome e selecione pelo menos uma universidade.');
       return;
@@ -172,46 +237,84 @@ export class GerenciamentoRotas implements OnInit {
 
     this.loading.set(true);
 
-    // Simulação de salvamento no backend
-    setTimeout(() => {
+    let rotaParaSalvar: Rota;
+
+    if (this.editando()) {
+      const rotaOriginal = this.rotas().find(r => r.id === formValues.id);
+      // Mantém o caminho/paradas original pois o form não edita o mapa
+      rotaParaSalvar = { 
+        ...rotaOriginal!, 
+        ...formValues 
+      };
+    } else {
+      rotaParaSalvar = {
+        id: Math.floor(Math.random() * 10000),
+        nome: formValues.nome,
+        turno: formValues.turno,
+        universidades: formValues.universidades,
+        caminho: [], // Nova rota começa vazia no mapa
+        paradas: []
+      };
+    }
+
+    this.rotasService.salvarRota(rotaParaSalvar).subscribe(() => {
       if (this.editando()) {
-        // Atualizar rota existente
         this.rotas.update(rotas => 
-          rotas.map(r => r.id === formValues.id ? { ...formValues } as Rota : r)
+          rotas.map(r => r.id === rotaParaSalvar.id ? rotaParaSalvar : r)
         );
       } else {
-        // Criar nova rota (Gera ID aleatório)
-        const novaRota: Rota = {
-          id: Math.floor(Math.random() * 10000),
-          nome: formValues.nome,
-          turno: formValues.turno,
-          universidades: formValues.universidades
-        };
-        this.rotas.update(rotas => [novaRota, ...rotas]);
+        this.rotas.update(rotas => [rotaParaSalvar, ...rotas]);
+      }
+      
+      this.loading.set(false);
+      this.fecharModalFormulario();
+    });
+  }
+
+  // --- Exclusão (Via Service) ---
+  abrirModalExclusao(rota: Rota): void {
+    this.rotaParaExcluir.set(rota);
+    this.modalExclusaoAberto.set(true);
+  }
+
+  confirmarExclusao(): void {
+    const rota = this.rotaParaExcluir();
+    if (!rota) return;
+
+    this.loading.set(true);
+
+    this.rotasService.excluirRota(rota.id).subscribe(() => {
+      this.rotas.update(rotas => rotas.filter(r => r.id !== rota.id));
+      
+      if (this.rotaSelecionada()?.id === rota.id) {
+        this.rotaSelecionada.set(null);
+        this.limparMapa();
       }
 
       this.loading.set(false);
-      this.fecharModalFormulario();
-    }, 500);
+      this.fecharModalExclusao();
+    });
   }
 
-  // Manipulação dos Checkboxes no Formulário
+  fecharModalExclusao(): void {
+    this.modalExclusaoAberto.set(false);
+    this.rotaParaExcluir.set(null);
+  }
+
+  // --- Auxiliares de Formulário e Filtro ---
   toggleUniversidadeForm(uni: string): void {
     const formAtual = this.formRota();
     const universidades = [...formAtual.universidades];
     const index = universidades.indexOf(uni);
 
     if (index > -1) {
-      universidades.splice(index, 1); // Remove
+      universidades.splice(index, 1);
     } else {
-      universidades.push(uni); // Adiciona
+      universidades.push(uni);
     }
-
-    // Atualiza o signal do form mantendo os outros campos
     this.formRota.set({ ...formAtual, universidades });
   }
 
-  // Atualização genérica de campos de texto/select
   atualizarForm(campo: keyof RotaForm, valor: any): void {
     this.formRota.update(f => ({ ...f, [campo]: valor }));
   }
@@ -225,44 +328,10 @@ export class GerenciamentoRotas implements OnInit {
     this.resetarFormulario();
   }
 
-  // --- Métodos de Exclusão ---
-
-  abrirModalExclusao(rota: Rota): void {
-    this.rotaParaExcluir.set(rota);
-    this.modalExclusaoAberto.set(true);
-  }
-
-  confirmarExclusao(): void {
-    const rota = this.rotaParaExcluir();
-    if (!rota) return;
-
-    this.loading.set(true);
-
-    // Simulação de delete
-    setTimeout(() => {
-      this.rotas.update(rotas => rotas.filter(r => r.id !== rota.id));
-      
-      // Se a rota excluída estava selecionada no mapa, limpa a seleção
-      if (this.rotaSelecionada()?.id === rota.id) {
-        this.rotaSelecionada.set(null);
-      }
-
-      this.loading.set(false);
-      this.fecharModalExclusao();
-    }, 500);
-  }
-
-  fecharModalExclusao(): void {
-    this.modalExclusaoAberto.set(false);
-    this.rotaParaExcluir.set(null);
-  }
-
-  // --- Métodos de Filtro (View) ---
-  
   atualizarFiltroTurno(valor: string): void {
     this.filtroTurno.set(valor);
-    // Limpa a seleção individual se mudar o filtro global para evitar confusão visual
-    this.rotaSelecionada.set(null); 
+    this.rotaSelecionada.set(null);
+    this.limparMapa();
   }
 
   atualizarFiltroUniversidade(valor: string): void {
@@ -278,5 +347,6 @@ export class GerenciamentoRotas implements OnInit {
     this.filtroUniversidade.set('');
     this.termoBusca.set('');
     this.rotaSelecionada.set(null);
+    this.limparMapa();
   }
 }

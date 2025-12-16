@@ -166,25 +166,10 @@
 
       <div class="map-container-card">
         <div class="jp-map-wrapper">
-          <div class="map-background"></div>
-          
-          <div class="map-overlays">
-            @for (uni of ['UFPB', 'UEPB', 'IFPB', 'UNIPE']; track uni) {
-              <div class="map-pin" [class]="'pin-' + uni.toLowerCase()">
-                <div class="pin-head">{{ uni }}</div>
-                <div class="pin-point"></div>
-              </div>
-            }
-
-            @if (rotaSelecionada() || filtroTurno()) {
-              <svg class="routes-svg-layer">
-                <path d="M 150 200 Q 300 150 450 250" class="route-path" />
-              </svg>
-            }
-          </div>
+         <div id="map" class="map-container"></div>
 
           <div class="map-legend">
-            <div class="legend-item"><span class="dot active"></span> Rota Ativa</div>
+            <div class="legend-item"><span class="dot active"></span> Rota Selecionada</div>
             <div class="legend-item"><span class="dot uni"></span> Universidade</div>
           </div>
         </div>

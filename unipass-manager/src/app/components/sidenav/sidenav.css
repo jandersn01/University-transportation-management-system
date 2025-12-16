@@ -115,7 +115,7 @@
 .sub-menu {
     list-style: none;
     padding: 10px 0; /* Adiciona respiro no topo e no fundo do bloco */
-    background: #1e262b; /* Um tom levemente mais escuro para dar profundidade */
+    /* background: #1e262b; /* Um tom levemente mais escuro para dar profundidade */
     border-radius: 0.625rem;
     margin-top: 5px;
     overflow: hidden;
@@ -142,36 +142,8 @@
 
 /* Hover específico para submenu */
 .sub-menu-item:hover .sub-menu-link {
-    color: #ffffff !important; /* Texto vira BRANCO */
-    background-color: rgba(255, 255, 255, 0.1) !important; /* Fundo sutil para destacar */
+    color: white !important; /* Texto vira BRANCO */
+    background-color:  rgba(255, 255, 255, 0.1) !important; /* Fundo sutil para destacar */
 }
 
-/* --- ESTILOS DO SUBMENU (CORRIGIDO) --- */
 
-
-/* Item individual da lista */
-
-
-/* Remove a margem do último item para não ficar espaço sobrando */
-
-
-/* O Link (área clicável) */
-.sub-menu-link {
-    display: flex;
-    align-items: center;
-    padding-left: 2.5rem !important; /* Indentação maior para diferenciar do pai */
-    height: 2.5rem !important; 
-    color: #b0b8c1; /* Cor inicial: Cinza claro (não branco total) para dar contraste no hover */
-    text-decoration: none;
-    transition: all 0.2s ease-in-out;
-    border-radius: 0.3rem; /* Leve arredondamento no item interno */
-    margin: 0 10px; /* Um pequeno recuo lateral para o hover não encostar nas bordas */
-}
-
-/* Ícone menor no submenu */
-.sub-icon {
-    font-size: 10px !important; /* Ícone mais delicado */
-    width: 20px;
-    text-align: center;
-    margin-right: 5px;
-}
