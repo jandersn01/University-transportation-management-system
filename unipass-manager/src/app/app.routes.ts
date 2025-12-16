@@ -4,6 +4,8 @@ import { SolicitacoesEstudantis } from './pages/solicitacoes-estudantis/solicita
 import { Administracao } from './pages/administracao/administracao';
 import { CadastroEstudantes } from './pages/cadastro-estudantes/cadastro-estudantes';
 import { NotFound } from './pages/not-found/not-found';
+import { LoginComponent } from './pages/login/login.component';
+import { AuthGuard } from './services/auth.guard';
 
 // 1. Importe o componente de Rotas (Verifique se o caminho da pasta está exato)
 import { GerenciamentoRotas } from './pages/gerenciamento/gerenciamento-rotas/gerenciamento-rotas';
@@ -28,6 +30,13 @@ export const routes: Routes = [
     {
         path: 'administracao', 
         component: Administracao,
+    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: 'login', component: LoginComponent },
+    { path: 'inicio', component: Inicio, canActivate: [AuthGuard] },
+    {path: 'solicitacoes-estudantis', component: SolicitacoesEstudantis, children: [
+        //{path: 'analisedecadastro', component: AnaliseDeCadastro}
+    ]},
+    {path:'administracao', component: Administracao,
         children:[
             { path: 'cadastrarestudantes', component: CadastroEstudantes }
         ]
@@ -59,4 +68,8 @@ export const routes: Routes = [
     
     // Wildcard
     { path: '**', redirectTo: '/404' }
+];
+    {path: '404', component: NotFound},
+    // Wildcard route para qualquer rota não encontrada
+    {path: '**', redirectTo: '/login'}
 ];
