@@ -1,0 +1,248 @@
+<main class="main-content">
+  <header class="header">
+    <h1>Gerenciamento de Rotas</h1>
+    <div class="user-info">
+      <span>João Silva</span>
+      <div class="user-avatar">JS</div>
+    </div>
+  </header>
+
+  <section class="filters-section">
+    <div class="filters-row">
+      
+      <div class="filter-group">
+        <label for="turno-filter">Turno de Operação</label>
+        <select 
+          id="turno-filter"
+          [value]="filtroTurno()"
+          (change)="atualizarFiltroTurno($any($event.target).value)">
+          <option value="">Todos os Turnos</option>
+          <option value="MANHA">Manhã</option>
+          <option value="TARDE">Tarde</option>
+          <option value="NOITE">Noite</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="university-filter">Universidade Contemplada</label>
+        <select 
+          id="university-filter"
+          [value]="filtroUniversidade()"
+          (change)="atualizarFiltroUniversidade($any($event.target).value)">
+          <option value="">Todas as Universidades</option>
+          <option value="UFPB">UFPB</option>
+          <option value="UEPB">UEPB</option>
+          <option value="IFPB">IFPB</option>
+          <option value="UNIPE">UNIPE</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="search">Buscar Rota</label>
+        <input 
+          type="text" 
+          id="search" 
+          placeholder="Nome da rota..."
+          [value]="termoBusca()"
+          (input)="atualizarTermoBusca($any($event.target).value)">
+      </div>
+
+      <div class="filter-group">
+        <label>&nbsp;</label>
+        <button class="btn btn-secondary" (click)="limparFiltros()">Limpar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats-section">
+    <div class="stat-card" [class.active]="filtroTurno() === ''">
+      <div class="stat-number">{{ estatisticas().total }}</div>
+      <div class="stat-label">Total de Rotas</div>
+    </div>
+    <div class="stat-card" [class.active]="filtroTurno() === 'MANHA'">
+      <div class="stat-number">{{ estatisticas().manha }}</div>
+      <div class="stat-label">Rotas Manhã</div>
+    </div>
+    <div class="stat-card" [class.active]="filtroTurno() === 'TARDE'">
+      <div class="stat-number">{{ estatisticas().tarde }}</div>
+      <div class="stat-label">Rotas Tarde</div>
+    </div>
+    <div class="stat-card" [class.active]="filtroTurno() === 'NOITE'">
+      <div class="stat-number">{{ estatisticas().noite }}</div>
+      <div class="stat-label">Rotas Noite</div>
+    </div>
+  </section>
+
+  <div class="routes-split-container">
+    
+    <section class="routes-list-section">
+      <div class="section-header">
+        <h2 class="section-title">Itinerários</h2>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="abrirModalCriacao()">
+            <i class="icon-plus"></i> Nova Rota
+          </button>
+        </div>
+      </div>
+
+      @if (loading()) {
+        <div class="loading-state">
+          <p>Carregando rotas...</p>
+        </div>
+      }
+
+      @if (!loading()) {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome da Rota</th>
+                <th>Turno</th>
+                <th>Universidades</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (rota of rotasFiltradas(); track rota.id) {
+                <tr [class.selected-row]="rotaSelecionada()?.id === rota.id" (click)="selecionarRota(rota)">
+                  <td>
+                    <strong>{{ rota.nome }}</strong>
+                  </td>
+                  <td>
+                    <span 
+                      class="status-badge"
+                      [ngClass]="{
+                        'status-active': rota.turno === 'MANHA',
+                        'status-warning': rota.turno === 'TARDE',
+                        'status-revoked': rota.turno === 'NOITE'
+                      }">
+                      {{ rota.turno }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="uni-tags">
+                      @for (uni of rota.universidades.slice(0, 3); track uni) {
+                        <span class="uni-tag">{{ uni }}</span>
+                      }
+                      @if (rota.universidades.length > 3) {
+                        <span class="uni-tag more">+{{ rota.universidades.length - 3 }}</span>
+                      }
+                    </div>
+                  </td>
+                  <td>
+                    <div class="action-buttons">
+                      <button class="btn-small btn-view" (click)="editarRota(rota); $event.stopPropagation()">
+                        Editar
+                      </button>
+                      <button class="btn-small btn-revoke" (click)="abrirModalExclusao(rota); $event.stopPropagation()">
+                        Excluir
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              }
+              @if (rotasFiltradas().length === 0) {
+                <tr>
+                  <td colspan="4" class="empty-cell">Nenhuma rota encontrada.</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </section>
+
+    <section class="map-view-section">
+      <div class="section-header">
+        <h2 class="section-title">Mapa da Operação</h2>
+        <span class="map-subtitle">
+          @if(filtroTurno()) {
+            Visualizando turno: <strong>{{ filtroTurno() }}</strong>
+          } @else {
+            Selecione um turno ou rota para detalhar
+          }
+        </span>
+      </div>
+
+      <div class="map-container-card">
+        <div class="jp-map-wrapper">
+         <div id="map" class="map-container"></div>
+
+          <div class="map-legend">
+            <div class="legend-item"><span class="dot active"></span> Rota Selecionada</div>
+            <div class="legend-item"><span class="dot uni"></span> Universidade</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  @if (modalFormularioAberto()) {
+    <div class="backdrop">
+      <div class="modal">
+        <h2>{{ editando() ? 'Editar Rota' : 'Nova Rota' }}</h2>
+        
+        <form (submit)="salvarRota($event)">
+          <div class="form-group">
+            <label for="rota-nome">Nome da Rota</label>
+            <input 
+              type="text" 
+              id="rota-nome" 
+              [value]="formRota().nome"
+              (input)="atualizarForm('nome', $any($event.target).value)"
+              placeholder="Ex: Circular Bancários / UFPB"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="rota-turno">Turno</label>
+            <select 
+              id="rota-turno"
+              [value]="formRota().turno"
+              (change)="atualizarForm('turno', $any($event.target).value)"
+              required>
+              <option value="MANHA">Manhã</option>
+              <option value="TARDE">Tarde</option>
+              <option value="NOITE">Noite</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Universidades Contempladas</label>
+            <div class="checkbox-grid">
+              @for (uni of listaUniversidades; track uni) {
+                <label class="checkbox-label">
+                  <input 
+                    type="checkbox" 
+                    [checked]="formRota().universidades.includes(uni)"
+                    (change)="toggleUniversidadeForm(uni)">
+                  {{ uni }}
+                </label>
+              }
+            </div>
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" (click)="fecharModalFormulario()">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+
+  @if (modalExclusaoAberto()) {
+    <div class="backdrop">
+      <div class="modal">
+        <h2>Confirmar Exclusão</h2>
+        <p>Tem certeza que deseja apagar a rota <strong>{{ rotaParaExcluir()?.nome }}</strong>?</p>
+        <p class="warning-text">Isso não poderá ser desfeito.</p>
+        
+        <div class="modal-actions">
+          <button class="btn btn-secondary" (click)="fecharModalExclusao()">Cancelar</button>
+          <button class="btn btn-revoke" (click)="confirmarExclusao()">Excluir Rota</button>
+        </div>
+      </div>
+    </div>
+  }
+</main>

@@ -1,8 +1,7 @@
 import { Component, signal, computed, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { EstudantesService, Estudante } from '../../services/estudantes';
-
+import { EstudantesService, Estudante, EstudanteListDTO } from '../../services/estudantes';
 
 export interface SolicitacaoEstudante {
   id: number;
@@ -39,7 +38,9 @@ export class SolicitacoesEstudantis implements OnInit {
   private estudantesService = inject(EstudantesService);
 
   // Signals para gerenciar dados
-  solicitacoes = signal<Estudante[]>([]);
+  solicitacoes = signal<EstudanteListDTO[]>([]);
+  estudanteDetalhes = signal<Estudante | null>(null);
+  loadingDetalhes = signal<boolean>(false);
   loading = signal<boolean>(false);
   error = signal<string | null>(null);
 
@@ -56,9 +57,9 @@ export class SolicitacoesEstudantis implements OnInit {
   estatisticas = computed((): Estatisticas => {
     const solicitacoes = this.solicitacoes();
     return {
-      pendentes: solicitacoes.filter(s => s.statusCadastro === 'Pendente').length,
-      aprovados: solicitacoes.filter(s => s.statusCadastro === 'Aprovado').length,
-      reprovados: solicitacoes.filter(s => s.statusCadastro === 'Recusado').length,
+      pendentes: solicitacoes.filter(s => s.statusCadastro === 'PENDENTE').length,
+      aprovados: solicitacoes.filter(s => s.statusCadastro === 'APROVADO').length,
+      reprovados: solicitacoes.filter(s => s.statusCadastro === 'RECUSADO').length,
       total: solicitacoes.length
     };
   });
@@ -70,12 +71,14 @@ export class SolicitacoesEstudantis implements OnInit {
     // Filtro por status
     if (this.filtroStatus()) {
       const statusMap: { [key: string]: string } = {
-        'pendente': 'Pendente',
-        'aprovado': 'Aprovado',
-        'reprovado': 'Recusado'
+        'pendente': 'PENDENTE',
+        'aprovado': 'APROVADO',
+        'reprovado': 'RECUSADO'
       };
-      const statusFiltro = statusMap[this.filtroStatus()] || this.filtroStatus();
-      solicitacoes = solicitacoes.filter(s => s.statusCadastro === statusFiltro);
+      const statusFiltro = statusMap[this.filtroStatus()];
+      if (statusFiltro) {
+        solicitacoes = solicitacoes.filter(s => s.statusCadastro === statusFiltro);
+      }
     }
 
     // Filtro por universidade
@@ -119,12 +122,11 @@ export class SolicitacoesEstudantis implements OnInit {
     this.carregarSolicitacoes();
   }
 
-  // Método para carregar dados do json-server
+  // Método para carregar dados
   carregarSolicitacoes(): void {
     this.loading.set(true);
     this.error.set(null);
     
-    // Carregar todos os estudantes para permitir filtros
     this.estudantesService.getTodosEstudantes().subscribe({
       next: (dados) => {
         this.solicitacoes.set(dados);
@@ -145,11 +147,11 @@ export class SolicitacoesEstudantis implements OnInit {
 
   // Métodos para ações
   aprovarSolicitacao(id: number): void {
-    this.estudantesService.atualizarStatus(id, 'Aprovado').subscribe({
+    this.estudantesService.atualizarStatus(id, 'APROVADO').subscribe({
       next: () => {
         this.solicitacoes.update(solicitacoes =>
           solicitacoes.map(s => 
-            s.id === id ? { ...s, statusCadastro: 'Aprovado' as const } : s
+            s.id === id ? { ...s, statusCadastro: 'APROVADO' } : s
           )
         );
       },
@@ -161,11 +163,11 @@ export class SolicitacoesEstudantis implements OnInit {
   }
 
   reprovarSolicitacao(id: number): void {
-    this.estudantesService.atualizarStatus(id, 'Recusado').subscribe({
+    this.estudantesService.atualizarStatus(id, 'RECUSADO').subscribe({
       next: () => {
         this.solicitacoes.update(solicitacoes =>
           solicitacoes.map(s => 
-            s.id === id ? { ...s, statusCadastro: 'Recusado' as const } : s
+            s.id === id ? { ...s, statusCadastro: 'RECUSADO' } : s
           )
         );
       },
@@ -176,13 +178,20 @@ export class SolicitacoesEstudantis implements OnInit {
     });
   }
 
-  estudante = signal<Estudante[]>([]); // pra carregar dados no modal;
-  verDetalhes(id: number): void{
-    this.modalAberto.set(true);
-    const estudante_unico = this.solicitacoes().filter(
-      estudante => (estudante.id === id)
-    )
-    this.estudante.set(estudante_unico);
+  verDetalhes(id: number): void {
+    this.loadingDetalhes.set(true);
+    
+    this.estudantesService.getEstudantePorId(id).subscribe({
+      next: (estudante) => {
+        this.estudanteDetalhes.set(estudante);
+        this.modalAberto.set(true);
+        this.loadingDetalhes.set(false);
+      },
+      error: (erro) => {
+        this.error.set('Erro ao carregar detalhes: ' + erro.message);
+        this.loadingDetalhes.set(false);
+      }
+    });
   }
 
   limparFiltros(): void {
@@ -197,6 +206,6 @@ export class SolicitacoesEstudantis implements OnInit {
   }
 
   fecharModal(): void {
-    this.modalAberto.set(false)
+    this.modalAberto.set(false);
   }
 }

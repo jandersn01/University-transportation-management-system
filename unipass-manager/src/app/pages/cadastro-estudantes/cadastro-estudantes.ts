@@ -40,8 +40,8 @@ export class CadastroEstudantes {
     if (this.cadastroForm.valid) {
       this.estudanteService.cadastrar(this.cadastroForm.value).subscribe({
         next: () => {
-          this.mensagem = 'Cadastro enviado com sucesso! Aguarde a aprovação.';
-          this.cadastroForm.reset();
+          this.mensagem = 'Cadastro enviado com sucesso! Aguarde a análise por nossos especialistas.';
+          //this.cadastroForm.reset();
         },
         error: (err) => {
           this.mensagem = 'Erro ao enviar cadastro. Tente novamente.';

@@ -1,0 +1,302 @@
+<!-- Main Content -->
+<main class="main-content">
+    <!-- Header -->
+    <header class="header">
+      <h1>Gerenciamento de Estudantes</h1>
+      <div class="user-info">
+        <span>João Silva</span>
+        <div class="user-avatar">JS</div>
+      </div>
+    </header>
+  
+    <!-- Filters Section -->
+    <section class="filters-section">
+      <div class="filters-row">
+        
+        <div class="filter-group">
+          <label for="university-filter">Universidade</label>
+          <select 
+            id="university-filter"
+            [value]="filtroUniversidade()"
+            (change)="atualizarFiltroUniversidade($any($event.target).value)">
+            <option value="">Todas as Universidades</option>
+            <option value="ufpb">UFPB</option>
+            <option value="uepb">UEPB</option>
+            <option value="ifpb">IFPB</option>
+          </select>
+        </div>
+  
+        <div class="filter-group">
+          <label for="frequencia-filter">Frequência</label>
+          <select 
+            id="frequencia-filter"
+            [value]="filtroFrequencia()"
+            (change)="atualizarFiltroFrequencia($any($event.target).value)">
+            <option value="">Todas as Frequências</option>
+            <option value="ALTA">Alta (≥70%)</option>
+            <option value="MEDIA">Média (40-69%)</option>
+            <option value="BAIXA">Baixa (<40%)</option>
+          </select>
+        </div>
+  
+        <div class="filter-group">
+          <label for="search">Buscar Estudante</label>
+          <input 
+            type="text" 
+            id="search" 
+            placeholder="Nome ou CPF"
+            [value]="termoBusca()"
+            (input)="atualizarTermoBusca($any($event.target).value)">
+        </div>
+  
+        <div class="filter-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-secondary" (click)="limparFiltros()">Limpar</button>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Statistics Cards -->
+    <section class="stats-section">
+      <div class="stat-card active">
+        <div class="stat-number">{{ estatisticas().ativos }}</div>
+        <div class="stat-label">Ativos</div>
+      </div>
+      <div class="stat-card revoked">
+        <div class="stat-number">{{ estatisticas().revogados }}</div>
+        <div class="stat-label">Revogados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ estatisticas().total }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+      <div class="stat-card frequency">
+        <div class="stat-number">{{ estatisticas().mediaBeneficiario }}%</div>
+        <div class="stat-label">Frequência Média</div>
+      </div>
+    </section>
+  
+    <!-- Students List -->
+    <section class="students-section">
+      <div class="section-header">
+        <h2 class="section-title">Estudantes</h2>
+        <div class="header-actions">
+          <button class="btn btn-primary" (click)="exportarRelatorio()">Exportar Relatório</button>
+        </div>
+      </div>
+  
+      <!-- Loading State -->
+      @if (loading()) {
+        <div class="loading-state">
+          <p>Carregando estudantes ativos...</p>
+        </div>
+      }
+  
+      <!-- Error State -->
+      @if (error()) {
+        <div class="error-state">
+          <p>{{ error() }}</p>
+          <button class="btn btn-primary" (click)="recarregarDados()">Tentar Novamente</button>
+        </div>
+      }
+      
+      <!-- Table -->
+      @if (!loading() && !error()) {
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome do Estudante</th>
+                <th>CPF</th>
+                <th>Universidade</th>
+                <th>Status do Benefício</th>
+                <th>Frequência</th>
+                <th>Faltas N/J</th>
+                <th>Última Viagem</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (estudante of estudantesFiltrados(); track estudante.id) {
+                <tr>
+                  <td>{{ estudante.nomeCompleto }}</td>
+                  <td>{{ estudante.cpf }}</td>
+                  <td>{{ estudante.universidade }}</td>
+                  <td>
+                    <span 
+                      class="status-badge"
+                      [ngClass]="{
+                        'status-active': estudante.statusBeneficio === 'ATIVO',
+                        'status-revoked': estudante.statusBeneficio === 'REVOGADO'
+                      }">
+                      {{ estudante.statusBeneficio }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="frequencia-container">
+                      <span class="frequencia-valor">{{ formatarFrequencia(estudante.frequencia) }}</span>
+                      <span 
+                        class="frequencia-label"
+                        [ngClass]="{
+                          'freq-alta': classificarFrequencia(estudante.frequencia) === 'ALTA',
+                          'freq-media': classificarFrequencia(estudante.frequencia) === 'MEDIA',
+                          'freq-baixa': classificarFrequencia(estudante.frequencia) === 'BAIXA'
+                        }">
+                        {{ classificarFrequencia(estudante.frequencia) }}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <span 
+                      class="faltas-badge"
+                      [ngClass]="{
+                        'faltas-ok': estudante.faltasNaoJustificadas <= 2,
+                        'faltas-atencao': estudante.faltasNaoJustificadas >= 3
+                      }">
+                      {{ estudante.faltasNaoJustificadas }}
+                    </span>
+                  </td>
+                  <td>{{ estudante.ultimaViagem }}</td>
+                  <td>
+                    <div class="action-buttons">
+                      <button 
+                        class="btn-small btn-view" 
+                        (click)="verDetalhes(estudante.id)">
+                        Detalhes
+                      </button>
+                      
+                      <button 
+                        class="btn-small btn-history" 
+                        (click)="verHistoricoViagens(estudante.id)">
+                        Histórico
+                      </button>
+                      
+                      @if (estudante.statusBeneficio === 'ATIVO') {
+                        <button 
+                          class="btn-small btn-revoke" 
+                          (click)="abrirModalRevogacao(estudante.id)">
+                          Revogar
+                        </button>
+                      }
+                    </div>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+  
+      <!-- Pagination -->
+      <div class="pagination">
+        <div class="pagination-info">
+          Mostrando 1-{{ estudantesFiltrados().length }} de {{ estatisticas().total }} registros
+        </div>
+        <div class="pagination-controls">
+          <button class="page-btn">Anterior</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">3</button>
+          <button class="page-btn">Próximo</button>
+        </div>
+      </div>
+    </section>
+  
+    <!-- Modal de Detalhes -->
+    @if (modalDetalhesAberto()) {
+      <div class="backdrop">
+        <div class="modal modal-large">
+          <h2>Detalhes do Estudante</h2>
+          @if (loadingDetalhes()) {
+            <p>Carregando detalhes...</p>
+          } @else if (estudanteSelecionado()) {
+            <div class="detalhes-grid">
+              <p><strong>Nome:</strong> {{ estudanteSelecionado()!.nomeCompleto }}</p>
+              <p><strong>CPF:</strong> {{ estudanteSelecionado()!.cpf }}</p>
+              <p><strong>RG:</strong> {{ estudanteSelecionado()!.rg }}</p>
+              <p><strong>Data de nascimento:</strong> {{ estudanteSelecionado()!.dataNascimento }}</p>
+              <p><strong>Universidade:</strong> {{ estudanteSelecionado()!.universidade }}</p>
+              <p><strong>Campus:</strong> {{ estudanteSelecionado()!.campus }}</p>
+              <p><strong>Turno:</strong> {{ estudanteSelecionado()!.turno }}</p>
+              <p><strong>Previsão de conclusão:</strong> {{ estudanteSelecionado()!.previsaoConclusao }}</p>
+              <p><strong>Declaração de vínculo:</strong> {{ estudanteSelecionado()!.declaracaoVinculoUrl }}</p>
+              <p><strong>Comprovante de residência:</strong> {{ estudanteSelecionado()!.comprovanteResidenciaUrl }}</p>
+            </div>
+          }
+          <div class="modal-actions">
+            <button class="btn btn-secondary" (click)="fecharModalDetalhes()">Fechar</button>
+          </div>
+        </div>
+      </div>
+    }
+  
+    <!-- Modal de Histórico de Viagens -->
+    @if (modalHistoricoAberto()) {
+      <div class="backdrop">
+        <div class="modal modal-large">
+          <h2>Histórico de Viagens</h2>
+          @if (loadingHistorico()) {
+            <p>Carregando histórico...</p>
+          } @else {
+            <div class="historico-container">
+              @for (viagem of historicoViagens(); track viagem.id) {
+                <div class="historico-item" [ngClass]="{ 'faltou': !viagem.compareceu }">
+                  <div class="historico-data">{{ viagem.data }}</div>
+                  <div class="historico-info">
+                    <span class="historico-rota">{{ viagem.rota }}</span>
+                    <span class="historico-tipo">{{ viagem.tipoViagem }}</span>
+                    <span class="historico-status" [ngClass]="viagem.compareceu ? 'presente' : 'ausente'">
+                      {{ viagem.compareceu ? 'Presente' : 'Faltou' }}
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+          <div class="modal-actions">
+            <button class="btn btn-secondary" (click)="fecharModalHistorico()">Fechar</button>
+          </div>
+        </div>
+      </div>
+    }
+  
+    <!-- Modal de Revogação -->
+    @if (modalRevogarAberto()) {
+      <div class="backdrop">
+        <div class="modal">
+          <h2>Revogar Benefício</h2>
+          <div class="form-group">
+            <label for="motivo-revogacao">Motivo da Revogação</label>
+            <select 
+              id="motivo-revogacao"
+              [value]="motivoRevogacao()"
+              (change)="motivoRevogacao.set($any($event.target).value)">
+              <option value="">Selecione o motivo</option>
+              <option value="CONCLUSAO_CURSO">Conclusão do curso</option>
+              <option value="TRANSFERENCIA">Transferência de universidade</option>
+              <option value="DESISTENCIA">Desistência do curso</option>
+              <option value="VIOLACAO_REGRAS">Violação das regras</option>
+              <option value="MUDANCA_RESIDENCIA">Mudança de residência</option>
+              <option value="OUTROS">Outros</option>
+            </select>
+          </div>
+          
+          <div class="form-group">
+            <label for="justificativa-revogacao">Justificativa Detalhada</label>
+            <textarea 
+              id="justificativa-revogacao"
+              rows="4"
+              placeholder="Descreva detalhadamente o motivo da revogação..."
+              [value]="justificativaRevogacao()"
+              (input)="justificativaRevogacao.set($any($event.target).value)">
+            </textarea>
+          </div>
+  
+          <div class="modal-actions">
+            <button class="btn btn-danger" (click)="confirmarRevogacao()">Confirmar Revogação</button>
+            <button class="btn btn-secondary" (click)="fecharModalRevogacao()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    }
+  </main>
