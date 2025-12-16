@@ -27,3 +27,6 @@ COPY --from=build /app/dist/unipass-manager/browser /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
+
+# --- ADICIONE ESTA LINHA ABAIXO ---
+CMD ["nginx", "-g", "daemon off;"]
