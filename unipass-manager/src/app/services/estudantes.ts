@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
+import { environment } from '../../environments/environment.prod';
 
 
 export interface EstudanteListDTO {
@@ -37,7 +37,7 @@ export class EstudantesService {
   private readonly http = inject(HttpClient)
 
   private readonly baseUrl = environment.apiUrl;
-  private readonly serviceUrl = `${this.baseUrl}/api/students`;
+  private readonly serviceUrl = `${this.baseUrl}/students`;
 
   //Post
   cadastrar(dadosEstudante: Omit<Estudante, 'id' | 'statusCadastro'>): Observable<Estudante> {
