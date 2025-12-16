@@ -1,4 +1,3 @@
-# ---------- Stage 1: Build Angular ----------
 FROM node:20-alpine AS build
 
 WORKDIR /app
@@ -9,18 +8,16 @@ RUN npm install
 COPY . .
 RUN npm run build
 
-# ---------- Stage 2: Nginx ----------
+# 🔍 DEBUG: mostrar exatamente o que foi gerado
+RUN echo "===== DIST CONTENT =====" \
+ && ls -R /app/dist || true
+
 FROM nginx:alpine
 
-# Remove configuração padrão do nginx
-RUN rm /etc/nginx/conf.d/default.conf
+RUN rm -rf /usr/share/nginx/html/*
 
-# Copia a configuração correta para SPA
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# ⚠️ Caminho correto do build Angular (Angular 16+)
-COPY --from=build /app/dist/unipass-manager/browser /usr/share/nginx/html
+# DEBUG: copiar TUDO para ver se algo chega
+COPY --from=build /app/dist /usr/share/nginx/html
 
 EXPOSE 80
-
 CMD ["nginx", "-g", "daemon off;"]
