@@ -1,6 +1,14 @@
 import { RouterLink } from "@angular/router";
 
-export const navaBarData = [
+export interface INavbarData {
+    routeLink: string;
+    icon: string;
+    label: string;
+    expanded?: boolean;    // Opcional: estado de aberto/fechado
+    items?: INavbarData[]; // Opcional: sub-itens (recursivo)
+}
+
+export const navaBarData: INavbarData[] = [
     {
         routeLink: 'inicio',
         icon: 'fal fa-home', // Mantido: Perfeito para a página inicial.
@@ -14,7 +22,20 @@ export const navaBarData = [
     {
         routeLink: 'gerenciamento',
         icon: 'fal fa-sitemap', // Alterado: Ícone que representa estrutura e organização.
-        label: 'Gerenciamento'
+        label: 'Gerenciamento',
+        expanded: false, // Começa fechado
+        items: [
+            {
+                routeLink: 'gerenciamento/estudantes',
+                icon: 'fal fa-users', // Ícone opcional
+                label: 'Estudantes'
+            },
+            {
+                routeLink: 'gerenciamento/rotas',
+                icon: 'fal fa-map-signs', // Ícone opcional
+                label: 'Rotas'
+            }
+        ]
     },
     {
         routeLink: 'comunicacao',
